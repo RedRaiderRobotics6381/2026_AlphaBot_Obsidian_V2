@@ -22,10 +22,12 @@ import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.path.Waypoint;
 import com.pathplanner.lib.util.FileVersionException;
 
+import choreo.auto.AutoChooser;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -38,6 +40,7 @@ import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.Secondary.Outtake;
 import frc.robot.subsystems.Secondary.RotateSubsystem;
 import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
+import frc.robot.autos.AutoPicker;
 
 public class RobotContainer {
 
@@ -60,6 +63,7 @@ public class RobotContainer {
     private final CommandXboxController joystick = new CommandXboxController(0);
     private final CommandXboxController engineer = new CommandXboxController(1);
 
+    private final AutoPicker autoChooser2 = new AutoPicker();
 
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
@@ -70,17 +74,12 @@ public class RobotContainer {
     public DriveToYaw driveToYaw = new DriveToYaw(drivetrain);
 
     public RobotContainer() {
+
         autoChooser = AutoBuilder.buildAutoChooser();
-        public Command intakePath(){
-            try{
-            PathPlannerPath intake = PathPlannerPath.fromChoreoTrajectory("Intake1");
-            return AutoBuilder.followPath(intake);
-            } catch (Exception e){
-                DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
-                return Commands.none();
-            }
+        for(int i = 0; i < autoChooser2.getAutoList().length; i++){
+            autoChooser.addOption(autoChooser2.getAutoList()[i].getName(), autoChooser2.getAutoList()[i].getPath());
         }
-        System.out.println(AutoBuilder.getAllAutoNames());
+
         configureBindings();
 
         // Warmup PathPlanner to avoid Java pauses
