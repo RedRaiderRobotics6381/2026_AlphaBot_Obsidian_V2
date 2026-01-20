@@ -13,46 +13,42 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.IndexerConstants;
 
 public class Indexer extends SubsystemBase {
-  public TalonFX indexMtrLdr;
-  private TalonFX indexMtrFlw;
-  private TalonFXConfiguration indexMtrLdrCon;
+  public TalonFX indexMtr;
+  private TalonFXConfiguration indexMtrCon;
   private VoltageOut voltageCntrl;
 
   public DigitalInput FuelSensor;
 
   public Indexer() {
-    indexMtrLdr = new TalonFX(IndexerConstants.INDEXER_MOTOR_PORT_LDR);
-    indexMtrFlw = new TalonFX(IndexerConstants.INDEXER_MOTOR_PORT_FLW);
-    indexMtrFlw.setControl(new Follower(IndexerConstants.INDEXER_MOTOR_PORT_LDR, MotorAlignmentValue.Aligned));
+    indexMtr = new TalonFX(IndexerConstants.INDEXER_MOTOR_PORT);
 
-    indexMtrLdrCon = new TalonFXConfiguration();
+    indexMtrCon = new TalonFXConfiguration();
     voltageCntrl = new VoltageOut(0.0);
 
       //coralSensor = new DigitalInput(CoralConstants.BEAM_BREAK_SENSOR_PORT);
 
-    indexMtrLdrCon.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-    indexMtrLdrCon.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+    indexMtrCon.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+    indexMtrCon.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
     
-    indexMtrLdrCon.CurrentLimits.SupplyCurrentLimitEnable = true;
-    indexMtrLdrCon.CurrentLimits.StatorCurrentLimitEnable = true;
-    indexMtrLdrCon.CurrentLimits.SupplyCurrentLimit = 30.0;
-    indexMtrLdrCon.CurrentLimits.StatorCurrentLimit = 50.0;
+    indexMtrCon.CurrentLimits.SupplyCurrentLimitEnable = true;
+    indexMtrCon.CurrentLimits.StatorCurrentLimitEnable = true;
+    indexMtrCon.CurrentLimits.SupplyCurrentLimit = 30.0;
+    indexMtrCon.CurrentLimits.StatorCurrentLimit = 50.0;
 
-    indexMtrLdrCon.Slot0.kP = 5.0;
-    indexMtrLdrCon.Slot0.kI = 0;
-    indexMtrLdrCon.Slot0.kD = 0;
+    indexMtrCon.Slot0.kP = 5.0;
+    indexMtrCon.Slot0.kI = 0;
+    indexMtrCon.Slot0.kD = 0;
 
-    indexMtrLdr.getConfigurator().apply(indexMtrLdrCon);
-    indexMtrFlw.getConfigurator().apply(indexMtrLdrCon);
+    indexMtr.getConfigurator().apply(indexMtrCon);
   }
 
   public void setVoltage(double volt) {
-    indexMtrLdr.setControl(voltageCntrl.withOutput(volt));
+    indexMtr.setControl(voltageCntrl.withOutput(volt));
   }
 
   @Override
   public void periodic() {
-      SmartDashboard.putNumber("Outtake Speed", indexMtrLdr.getVelocity().getValueAsDouble());
+      SmartDashboard.putNumber("Outtake Speed", indexMtr.getVelocity().getValueAsDouble());
       SmartDashboard.putBoolean("CoralSensor", FuelSensor.get());
   }
 }

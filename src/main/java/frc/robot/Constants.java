@@ -18,12 +18,12 @@ public class Constants {
   }
 
   public static class IndexerConstants {
-    public static final int INDEXER_MOTOR_PORT_LDR = 0; //TODO Change Later!
-    public static final int INDEXER_MOTOR_PORT_FLW = 0; //TODO Change Later!
+    public static final int INDEXER_MOTOR_PORT = 0; //TODO Change Later!
   }
 
   public static class IntakeConstants {
-    public static final int INTAKE_MOTOR_PORT = 0; //TODO Change Later!
+    public static final int INTAKE_MOTOR_PORT_LDR = 0; //TODO Change Later!
+    public static final int INTAKE_MOTOR_PORT_FLW = 0; //TODO Change Later!
   }
 
   public static class ClimberConstants {
