@@ -14,7 +14,7 @@ import frc.robot.Constants.IndexerConstants;
 
 public class Indexer extends SubsystemBase {
   public TalonFX indexMtrLdr;
-  private TalonFX indexMtrFlw;
+  public TalonFX indexMtrFlw;
   private TalonFXConfiguration indexMtrLdrCon;
   private VoltageOut voltageCntrl;
 
@@ -43,7 +43,6 @@ public class Indexer extends SubsystemBase {
     indexMtrLdrCon.Slot0.kD = 0;
 
     indexMtrLdr.getConfigurator().apply(indexMtrLdrCon);
-    indexMtrFlw.getConfigurator().apply(indexMtrLdrCon);
   }
 
   public void setVoltage(double volt) {
