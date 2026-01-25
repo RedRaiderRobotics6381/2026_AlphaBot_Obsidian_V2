@@ -11,36 +11,17 @@ import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 
 public class Constants {
-  public static class TurretConstants {
-    public static final int TURRET_MOTOR_PORT = 0; //TODO Change Later!
-    public static final int TURRET_ACCELERATION_CONSTRAINT = 0; //TODO Change Later!
-    public static final int TURRET_VELOCITY_CONSTRAINT = 0; //TODO Change Later!
-  }
-
   public static class IndexerConstants {
-    public static final int INDEXER_MOTOR_PORT = 0; //TODO Change Later!
+    public static final int INDEXER_MOTOR_PORT = 15; 
   }
 
   public static class IntakeConstants {
-    public static final int INTAKE_MOTOR_PORT_LDR = 0; //TODO Change Later!
-    public static final int INTAKE_MOTOR_PORT_FLW = 0; //TODO Change Later!
-  }
-
-  public static class ClimberConstants {
-    public static final int LEFT_CLIMBER_MOTOR_PORT = 0; //TODO Change Later!
-    public static final int RIGHT_CLIMBER_MOTOR_PORT = 0; //TODO Change Later!
-    public static final int CLIMBER_ACCELERATION_CONSTRAINT = 0; //TODO Change Later!
-    public static final int CLIMBER_VELOCITY_CONSTRAINT = 0; //TODO Change Later!
-  }
-
-  public static class RotateConstants {
-    public static final int ROTATE_MOTOR_PORT = 0; //TODO Change Later!
-    public static final int ROTATE_ACCELERATION_CONSTRAINT = 0; //TODO Change Later!
-    public static final int ROTATE_VELOCITY_CONSTRAINT = 0; //TODO Change Later!
+    public static final int INTAKE_MOTOR_PORT_FRONT = 17; 
+    public static final int INTAKE_MOTOR_PORT_BACK = 16; 
   }
 
   public static class OuttakeConstants {
-    public static final int OUTTAKE_MOTOR_PORT = 0; //TODO Change Later!
+    public static final int OUTTAKE_MOTOR_PORT = 14; //TODO Change Later!
     public static final int OUTTAKE_ACCELERATION_CONSTRAINT = 0; //TODO Change Later!
   }
     public static class Vision {
@@ -108,3 +89,4 @@ public class Constants {
     public static int Reef300 = 0; // 6 red, 19
   }
 }
+

@@ -37,8 +37,8 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
-import frc.robot.Commands.AutoAutoShooter;
-import frc.robot.Commands.AutoShooter;
+// import frc.robot.Commands.AutoAutoShooter;
+// import frc.robot.Commands.AutoShooter;
 import frc.robot.Commands.DriveToYaw;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.Secondary.Indexer;
@@ -76,8 +76,8 @@ public class RobotContainer {
     public final Outtake m_outtake = new Outtake();
     public final Indexer m_indexer = new Indexer();
     public final Intake m_intake = new Intake();
-    public final AutoShooter m_autoshooter = new AutoShooter(m_outtake, m_indexer, drivetrain);
-    public final AutoAutoShooter m_autoautoshooter = new AutoAutoShooter(m_outtake, m_indexer, drivetrain);
+    // public final AutoShooter m_autoshooter = new AutoShooter(m_outtake, m_indexer, drivetrain);
+    // public final AutoAutoShooter m_autoautoshooter = new AutoAutoShooter(m_outtake, m_indexer, drivetrain);
     public DriveToYaw driveToYaw = new DriveToYaw(drivetrain);
 
     public RobotContainer() {
@@ -90,8 +90,8 @@ public class RobotContainer {
         configureBindings();
         NamedCommands.registerCommand("Intake", Commands.runOnce(() -> m_intake.setVoltage(5)));
         NamedCommands.registerCommand("Stop Intake", Commands.runOnce(() -> m_intake.setVoltage(0)));
-        NamedCommands.registerCommand("Auto Auto Shooter", m_autoautoshooter);
-        NamedCommands.registerCommand("Stop Auto Auto Shooter", Commands.runOnce(() -> AutoAutoShooter.isDone = true));
+        // NamedCommands.registerCommand("Auto Auto Shooter", m_autoautoshooter);
+        // NamedCommands.registerCommand("Stop Auto Auto Shooter", Commands.runOnce(() -> AutoAutoShooter.isDone = true));
         // Warmup PathPlanner to avoid Java pauses
         FollowPathCommand.warmupCommand().schedule();
     }
@@ -120,9 +120,10 @@ public class RobotContainer {
         ));
 
         engineer.a().whileTrue(driveToYaw);
-        engineer.b().onTrue(Commands.runOnce(() -> m_intake.setVoltage(5)));
-        engineer.x().onTrue(Commands.runOnce(() -> m_intake.setVoltage(0)));
-        engineer.rightBumper().whileTrue(m_autoshooter);
+        engineer.b().onTrue(m_intake.setVoltageCmd(5));
+        engineer.x().onTrue(m_intake.setVoltageCmd(0));
+        engineer.y().whileTrue(m_indexer.setVoltageCmd(1));
+        engineer.rightBumper().whileTrue(m_outtake.setVelocityCmd(100));
 
 
         joystick.pov(0).whileTrue(drivetrain.applyRequest(() ->
