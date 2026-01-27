@@ -21,7 +21,7 @@ public class Constants {
   }
 
   public static class OuttakeConstants {
-    public static final int OUTTAKE_MOTOR_PORT = 14; //TODO Change Later!
+    public static final int OUTTAKE_MOTOR_PORT = 14;
     public static final int OUTTAKE_ACCELERATION_CONSTRAINT = 0; //TODO Change Later!
   }
     public static class Vision {

@@ -6,12 +6,13 @@ import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFXS;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
+import com.ctre.phoenix6.signals.MotorArrangementValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.IndexerConstants;
 import frc.robot.Constants.IntakeConstants;
+import frc.robot.generated.TunerConstants;
 
 public class Intake extends SubsystemBase {
     public TalonFXS intMtrFrnt;
@@ -22,13 +23,13 @@ public class Intake extends SubsystemBase {
     public boolean close;
 
 public Intake() {
-    intMtrFrnt = new TalonFXS(IntakeConstants.INTAKE_MOTOR_PORT_FRONT);
-    intMtrBck = new TalonFXS(IntakeConstants.INTAKE_MOTOR_PORT_BACK);
+    intMtrFrnt = new TalonFXS(IntakeConstants.INTAKE_MOTOR_PORT_FRONT, TunerConstants.kCANBus);
+    intMtrBck = new TalonFXS(IntakeConstants.INTAKE_MOTOR_PORT_BACK, TunerConstants.kCANBus);
     intMtrBck.setControl(new Follower(IntakeConstants.INTAKE_MOTOR_PORT_FRONT, MotorAlignmentValue.Aligned));
 
-
     intVelMtrLdrCfg = new TalonFXSConfiguration();
-    voltageCntrl = new VoltageOut(0.0);
+    intVelMtrLdrCfg.Commutation.MotorArrangement = MotorArrangementValue.VORTEX_JST;
+    voltageCntrl = new VoltageOut(1.0);
 
     intVelMtrLdrCfg.MotorOutput.NeutralMode = NeutralModeValue.Coast;
     intVelMtrLdrCfg.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;

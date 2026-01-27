@@ -40,7 +40,6 @@ public class Robot extends TimedRobot {
     // backVision.periodic();
     // leftVision.periodic();
     // rightVision.periodic();
-    System.out.println("hello");
 
   }
 

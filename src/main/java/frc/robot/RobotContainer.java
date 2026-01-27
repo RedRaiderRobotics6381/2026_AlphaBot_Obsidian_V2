@@ -122,7 +122,7 @@ public class RobotContainer {
         engineer.a().whileTrue(driveToYaw);
         engineer.b().onTrue(m_intake.setVoltageCmd(5));
         engineer.x().onTrue(m_intake.setVoltageCmd(0));
-        engineer.y().whileTrue(m_indexer.setVoltageCmd(1));
+        engineer.y().whileTrue(m_indexer.setVoltageCmd(2));
         engineer.rightBumper().whileTrue(m_outtake.setVelocityCmd(100));
 
 

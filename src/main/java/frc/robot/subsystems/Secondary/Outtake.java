@@ -1,6 +1,7 @@
 package frc.robot.subsystems.Secondary;
 
 import frc.robot.Constants.OuttakeConstants;
+import frc.robot.generated.TunerConstants;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -10,6 +11,7 @@ import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.hardware.TalonFXS;
 import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.MotorArrangementValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 public class Outtake extends SubsystemBase {
@@ -17,13 +19,14 @@ public class Outtake extends SubsystemBase {
     private TalonFXSConfiguration wheelSpeedMtrCfg;
     private MotionMagicVelocityVoltage motionMagicVelocityVoltage;
 
-    private double kP = 0.010, kI = 0.0, kD = 0.15;
+    private double kP = 15.0, kI = 0.0, kD = 0.15;
     public boolean close;
 
     public Outtake() {
-        wheelSpeedMtr = new TalonFXS(OuttakeConstants.OUTTAKE_MOTOR_PORT);
+        wheelSpeedMtr = new TalonFXS(OuttakeConstants.OUTTAKE_MOTOR_PORT, TunerConstants.kCANBus);
 
         wheelSpeedMtrCfg = new TalonFXSConfiguration();
+        wheelSpeedMtrCfg.Commutation.MotorArrangement = MotorArrangementValue.VORTEX_JST;
         motionMagicVelocityVoltage = new MotionMagicVelocityVoltage(0.0).withSlot(0);
 
         wheelSpeedMtrCfg.Slot0.kP = kP;
@@ -49,7 +52,7 @@ public class Outtake extends SubsystemBase {
                 },
                 () -> setVelocity(vel), interrupted -> {
                 },
-                () -> (Math.abs(vel - wheelSpeedMtr.getVelocity().getValueAsDouble()) <= 50),
+                () -> (Math.abs(vel - wheelSpeedMtr.getVelocity().getValueAsDouble()) <= 1),
                 this);
     }
 
