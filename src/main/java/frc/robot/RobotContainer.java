@@ -32,13 +32,19 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.button.CommandGenericHID;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
+import frc.robot.Commands.AutoShooter;
 import frc.robot.Commands.DriveToYaw;
 import frc.robot.generated.TunerConstants;
+import frc.robot.subsystems.Secondary.Climber;
+import frc.robot.subsystems.Secondary.Indexer;
+import frc.robot.subsystems.Secondary.Intake;
 import frc.robot.subsystems.Secondary.Outtake;
 import frc.robot.subsystems.Secondary.RotateSubsystem;
+import frc.robot.subsystems.Secondary.Turret;
 import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
 import frc.robot.autos.AutoPicker;
 
@@ -61,9 +67,10 @@ public class RobotContainer {
     private final Telemetry logger = new Telemetry(MaxSpeed);
 
     private final CommandXboxController joystick = new CommandXboxController(0);
-    private final CommandXboxController engineer = new CommandXboxController(1);
+    private final CommandGenericHID engineer = new CommandGenericHID(1);
 
     private final AutoPicker autoChooser2 = new AutoPicker();
+
 
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
@@ -71,7 +78,14 @@ public class RobotContainer {
     private final SendableChooser<Command> autoChooser;
 
     public final Outtake m_outtake = new Outtake();
+    public final Intake m_intake = new Intake();
     public DriveToYaw driveToYaw = new DriveToYaw(drivetrain);
+
+    private final Indexer m_indexer = new Indexer();
+    private final Turret m_turret = new Turret();
+    private final Climber m_climber = new Climber();
+    private final AutoShooter m_autoShooter = new AutoShooter(m_outtake, m_RotateSubsystem, m_indexer, drivetrain, m_turret);
+
 
     public RobotContainer() {
 
@@ -109,7 +123,12 @@ public class RobotContainer {
             point.withModuleDirection(new Rotation2d(-joystick.getLeftY(), -joystick.getLeftX()))
         ));
 
-        engineer.a().whileTrue(driveToYaw);
+  //      engineer.().whileTrue(driveToYaw);
+        engineer.button(1).whileTrue(m_intake.reverseIntake());
+        engineer.button(2).onTrue(Commands.runOnce(() -> m_intake.setVoltage(3)));
+        engineer.button(5).onTrue(m_autoShooter);
+        engineer.button(6).onTrue(m_climber.ClimberHeightCmd(0));//TODO change value
+        engineer.button(10).onTrue(m_climber.ClimberHeightCmd(0)); // TODO change value
 
         joystick.pov(0).whileTrue(drivetrain.applyRequest(() ->
             forwardStraight.withVelocityX(0.5).withVelocityY(0))
