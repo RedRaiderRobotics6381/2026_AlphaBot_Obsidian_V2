@@ -11,52 +11,51 @@ import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 
 public class Constants {
-  public static class TurretConstants {
-    public static final int TURRET_MOTOR_PORT = 0; //TODO Change Later!
-    public static final int TURRET_ACCELERATION_CONSTRAINT = 0; //TODO Change Later!
-    public static final int TURRET_VELOCITY_CONSTRAINT = 0; //TODO Change Later!
-  }
 
   public static class IndexerConstants {
-    public static final int INDEXER_MOTOR_PORT_LDR = 0; //TODO Change Later!
-    public static final int INDEXER_MOTOR_PORT_FLW = 0; //TODO Change Later!
+    public static final int INDEXER_MOTOR_PORT = 25;
+    public static final int UPTAKE_WHEELS_PORT = 27;
+    public static final int UPTAKE_BELT_PORT = 30;
   }
 
   public static class IntakeConstants {
-    public static final int INTAKE_MOTOR_PORT = 0; //TODO Change Later!
+    public static final int INTAKE_MOTOR_PORT_1 = 36;
+    public static final int INTAKE_MOTOR_PORT_2 = 37;
+
   }
 
-  public static class ClimberConstants {
-    public static final int LEFT_CLIMBER_MOTOR_PORT = 0; //TODO Change Later!
-    public static final int RIGHT_CLIMBER_MOTOR_PORT = 0; //TODO Change Later!
-    public static final int CLIMBER_ACCELERATION_CONSTRAINT = 0; //TODO Change Later!
-    public static final int CLIMBER_VELOCITY_CONSTRAINT = 0; //TODO Change Later!
+  public static class IntakeSliderConstants {
+    public static final int INTAKE_SLIDER_MOTOR_PORT_LDR = 35;
+    public static final int INTAKE_SLIDER_MOTOR_PORT_FLW = 26;
+    public static final int SLIDER_ACCELERATION_CONSTRAINT = 9999; 
+    public static final int SLIDER_VELOCITY_CONSTRAINT = 9999; 
   }
 
-  public static class RotateConstants {
-    public static final int ROTATE_MOTOR_PORT = 0; //TODO Change Later!
-    public static final int ROTATE_ACCELERATION_CONSTRAINT = 0; //TODO Change Later!
-    public static final int ROTATE_VELOCITY_CONSTRAINT = 0; //TODO Change Later!
+  public static class RotationConstants {
+    public static final int ROTATION_MOTOR_PORT = 28;
+    public static final int ROTATION_ACCELERATION_CONSTRAINT = 9999; 
+    public static final int ROTATION_VELOCITY_CONSTRAINT = 9999; 
+    public static final double ROTATION_INITIAL_ANGLE = 89; //TODO double-check
   }
 
   public static class OuttakeConstants {
-    public static final int OUTTAKE_MOTOR_PORT = 0; //TODO Change Later!
-    public static final int OUTTAKE_ACCELERATION_CONSTRAINT = 0; //TODO Change Later!
+    public static final int OUTTAKE_MOTOR_PORT = 29;
+    public static final int OUTTAKE_ACCELERATION_CONSTRAINT = 9999;
   }
     public static class Vision {
-        public static final String kFrontCameraName = "camFront";
-        public static final String kBackCameraName = "camBack";
-        public static final String kLeftCameraName = "camLeft";
-        public static final String kRightCameraName = "camRight";
+        public static final String kFrontCameraName = "Front";
+        public static final String kBackCameraName = "Back";
+        public static final String kOuttakeCameraName = "OuttakeSide";
+        public static final String kRadioCameraName = "RadioSide";
         // Cam mounted facing forward, half a meter forward of center, half a meter up from center.
         public static final Transform3d kFrontRobotToCam =
-                new Transform3d(new Translation3d(0.5, 0.0, 0.5), new Rotation3d(0, 0, 0));
+                new Transform3d(new Translation3d(0.34, 0.267, 0.512), new Rotation3d(0, Math.PI/6, 0));
         public static final Transform3d kBackRobotToCam =
-                new Transform3d(new Translation3d(0.5, 0.0, 0.5), new Rotation3d(0, 0, 0));
-        public static final Transform3d kLeftRobotToCam =
-                new Transform3d(new Translation3d(0.5, 0.0, 0.5), new Rotation3d(0, 0, 0));
-        public static final Transform3d kRightRobotToCam =
-                new Transform3d(new Translation3d(0.5, 0.0, 0.5), new Rotation3d(0, 0, 0));
+                new Transform3d(new Translation3d(-0.34, -0.111, 0.415), new Rotation3d(0, Math.PI/6, Math.PI));
+        public static final Transform3d kOuttakeRobotToCam =
+                new Transform3d(new Translation3d(0.175, 0.34, 0.52), new Rotation3d(0, Math.PI/6, 3 * Math.PI/2));
+        public static final Transform3d kRadioRobotToCam =
+                new Transform3d(new Translation3d(0.175, -0.34, 0.52), new Rotation3d(0, Math.PI/6, Math.PI / 2));
 
         // The layout of the AprilTags on the field
         public static final AprilTagFieldLayout kTagLayout =
@@ -83,7 +82,7 @@ public class Constants {
     
   }
   public static class ConstantValues {
-    public static double SHOOTER_RPM = 700; //TODO Change Later
+    public static double SHOOTER_RPS = 30; //TODO Change Later
     public static double SHOOTER_SPEED = 0; //TODO Change Later
     
   }

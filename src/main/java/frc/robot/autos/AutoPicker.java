@@ -14,13 +14,13 @@ public class AutoPicker {
     private Autos[] autoList;
     public AutoPicker(){
        autoList = new Autos[1]; //TODO Change this number when adding paths
-       autoList[0] = new Autos("Intake", intakePath());
+       autoList[0] = new Autos("JustShoot", shootPath());
     }
 
-    public Command intakePath(){
+    public Command shootPath(){
         try{
-            PathPlannerPath intake = PathPlannerPath.fromChoreoTrajectory("Intake1");
-            return AutoBuilder.followPath(intake);
+            PathPlannerPath shoot = PathPlannerPath.fromChoreoTrajectory("JustShoot");
+            return AutoBuilder.followPath(shoot);
         } catch (Exception e){
             DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
             return Commands.none();

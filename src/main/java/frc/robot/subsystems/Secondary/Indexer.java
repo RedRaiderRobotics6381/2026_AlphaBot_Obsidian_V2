@@ -7,52 +7,71 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.IndexerConstants;
+import frc.robot.generated.TunerConstants;
 
 public class Indexer extends SubsystemBase {
-  public TalonFX indexMtrLdr;
-  private TalonFX indexMtrFlw;
-  private TalonFXConfiguration indexMtrLdrCon;
+  public TalonFX indexMtr;
+  public TalonFX uptakeWheelMtr;
+  public TalonFX uptakeBeltMtr;
+  private TalonFXConfiguration indexMtrCon;
   private VoltageOut voltageCntrl;
 
-  public DigitalInput FuelSensor;
+  // public DigitalInput FuelSensor;
 
   public Indexer() {
-    indexMtrLdr = new TalonFX(IndexerConstants.INDEXER_MOTOR_PORT_LDR);
-    indexMtrFlw = new TalonFX(IndexerConstants.INDEXER_MOTOR_PORT_FLW);
-    indexMtrFlw.setControl(new Follower(IndexerConstants.INDEXER_MOTOR_PORT_LDR, MotorAlignmentValue.Aligned));
+    indexMtr = new TalonFX(IndexerConstants.INDEXER_MOTOR_PORT, TunerConstants.kCANBus);
+    uptakeWheelMtr = new TalonFX(IndexerConstants.UPTAKE_WHEELS_PORT, TunerConstants.kCANBus);
+    uptakeBeltMtr = new TalonFX(IndexerConstants.UPTAKE_BELT_PORT, TunerConstants.kCANBus);
+    uptakeWheelMtr.setControl(new Follower(IndexerConstants.INDEXER_MOTOR_PORT, MotorAlignmentValue.Aligned));
+    uptakeBeltMtr.setControl(new Follower(IndexerConstants.INDEXER_MOTOR_PORT, MotorAlignmentValue.Opposed));
 
-    indexMtrLdrCon = new TalonFXConfiguration();
+    indexMtrCon = new TalonFXConfiguration();
     voltageCntrl = new VoltageOut(0.0);
 
-      //coralSensor = new DigitalInput(CoralConstants.BEAM_BREAK_SENSOR_PORT);
-
-    indexMtrLdrCon.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-    indexMtrLdrCon.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+    indexMtrCon.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+    indexMtrCon.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
     
-    indexMtrLdrCon.CurrentLimits.SupplyCurrentLimitEnable = true;
-    indexMtrLdrCon.CurrentLimits.StatorCurrentLimitEnable = true;
-    indexMtrLdrCon.CurrentLimits.SupplyCurrentLimit = 30.0;
-    indexMtrLdrCon.CurrentLimits.StatorCurrentLimit = 50.0;
+    indexMtrCon.CurrentLimits.SupplyCurrentLimitEnable = true;
+    indexMtrCon.CurrentLimits.StatorCurrentLimitEnable = true;
+    indexMtrCon.CurrentLimits.SupplyCurrentLimit = 80.0;
+    indexMtrCon.CurrentLimits.StatorCurrentLimit = 80.0;
 
-    indexMtrLdrCon.Slot0.kP = 5.0;
-    indexMtrLdrCon.Slot0.kI = 0;
-    indexMtrLdrCon.Slot0.kD = 0;
-
-    indexMtrLdr.getConfigurator().apply(indexMtrLdrCon);
-    indexMtrFlw.getConfigurator().apply(indexMtrLdrCon);
+    indexMtr.getConfigurator().apply(indexMtrCon);
+    uptakeWheelMtr.getConfigurator().apply(indexMtrCon);
+    uptakeBeltMtr.getConfigurator().apply(indexMtrCon);
   }
 
   public void setVoltage(double volt) {
-    indexMtrLdr.setControl(voltageCntrl.withOutput(volt));
+    indexMtr.setControl(voltageCntrl.withOutput(volt));
   }
+
+      public FunctionalCommand setVoltageCmd(double volt) {
+        return new FunctionalCommand(
+                () -> {
+                },
+                () -> setVoltage(volt),
+                interrupted -> {
+                },
+                () -> (Math.abs(- indexMtr.getMotorVoltage().getValueAsDouble()) <= 5000),
+                this);
+    }
 
   @Override
   public void periodic() {
-      SmartDashboard.putNumber("Outtake Speed", indexMtrLdr.getVelocity().getValueAsDouble());
-      SmartDashboard.putBoolean("CoralSensor", FuelSensor.get());
+      SmartDashboard.putNumber("Outtake Speed", indexMtr.getMotorVoltage().getValueAsDouble());
+      // SmartDashboard.putBoolean("CoralSensor", FuelSensor.get());
+  }
+
+  public Command runIndexer(){
+    return Commands.runEnd(
+      () -> setVoltage(8), 
+      () -> setVoltage(0), 
+      this);
   }
 }

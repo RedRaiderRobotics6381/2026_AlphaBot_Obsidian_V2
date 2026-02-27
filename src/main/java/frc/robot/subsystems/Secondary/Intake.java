@@ -1,54 +1,91 @@
 package frc.robot.subsystems.Secondary;
 
-import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.configs.TalonFXSConfiguration;
+import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.VoltageOut;
-import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.hardware.TalonFXS;
 import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.MotorAlignmentValue;
+import com.ctre.phoenix6.signals.MotorArrangementValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.IntakeConstants;
+import frc.robot.generated.TunerConstants;
 
 public class Intake extends SubsystemBase {
-    public TalonFX intVelMtr;
-    private TalonFXConfiguration intVelMtrCfg;
+    public TalonFXS intMtrFrnt;
+    public TalonFXS intMtrBck;
+    private TalonFXSConfiguration intVelMtrLdrCfg;
     private VoltageOut voltageCntrl;
-
-    private double kP = 1.00, kI = 0.0, kD = 0.00;
-    public boolean close;
+    public boolean intakeOn;
+    public boolean reverseIntakeOn;
 
 public Intake() {
-    intVelMtr = new TalonFX(IntakeConstants.INTAKE_MOTOR_PORT);
+    intakeOn = false;
+    intMtrFrnt = new TalonFXS(IntakeConstants.INTAKE_MOTOR_PORT_1, TunerConstants.kCANBus);
+    intMtrBck = new TalonFXS(IntakeConstants.INTAKE_MOTOR_PORT_2, TunerConstants.kCANBus);
+    //intMtrBck.setControl(new Follower(IntakeConstants.INTAKE_MOTOR_PORT_1, MotorAlignmentValue.Aligned));
 
-    intVelMtrCfg = new TalonFXConfiguration();
+    intVelMtrLdrCfg = new TalonFXSConfiguration();
+    intVelMtrLdrCfg.Commutation.MotorArrangement = MotorArrangementValue.VORTEX_JST;
     voltageCntrl = new VoltageOut(0.0);
 
-    intVelMtrCfg.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-    intVelMtrCfg.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+    intVelMtrLdrCfg.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+    intVelMtrLdrCfg.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
 
-    intVelMtrCfg.CurrentLimits.SupplyCurrentLimitEnable = true;
-    intVelMtrCfg.CurrentLimits.StatorCurrentLimitEnable = true;
-    intVelMtrCfg.CurrentLimits.SupplyCurrentLimit = 30.0;
-    intVelMtrCfg.CurrentLimits.StatorCurrentLimit = 50.0;
+    intVelMtrLdrCfg.CurrentLimits.SupplyCurrentLimitEnable = true;
+    intVelMtrLdrCfg.CurrentLimits.StatorCurrentLimitEnable = true;
+    intVelMtrLdrCfg.CurrentLimits.SupplyCurrentLimit = 50.0;
+    intVelMtrLdrCfg.CurrentLimits.StatorCurrentLimit = 130.0;
 
-    intVelMtrCfg.Slot0.kP = kP;
-    intVelMtrCfg.Slot0.kI = kI;
-    intVelMtrCfg.Slot0.kD = kD;
 
-    intVelMtr.getConfigurator().apply(intVelMtrCfg);
+    intMtrFrnt.getConfigurator().apply(intVelMtrLdrCfg);
+    intMtrBck.getConfigurator().apply(intVelMtrLdrCfg);
 }
+
+    public FunctionalCommand setVoltageCmd(double volt) {
+        return new FunctionalCommand(
+                () -> {
+                },
+                () -> setVoltage(volt),
+                interrupted -> {
+                },
+                () -> (Math.abs(- intMtrFrnt.getMotorVoltage().getValueAsDouble()) <= 5000),
+                this);
+    }
+
+    
 
 public void setVoltage(double volt) {
-    intVelMtr.setControl(voltageCntrl.withOutput(volt));
+    intMtrFrnt.setControl(voltageCntrl.withOutput(Math.signum(volt) * (Math.abs(volt) + 3)));
+    intMtrBck.setControl(voltageCntrl.withOutput(Math.signum(volt) * (Math.abs(volt) - 3)));
 }
 
-public Command reverseIntake() {
-    return Commands.runEnd(
-        () -> setVoltage(-3),
-        () -> setVoltage(0), 
-         this);
+public void runIntake(){
+    if(intakeOn){
+        intakeOn = false;
+        setVoltage(0);
+    } else {
+        intakeOn = true;
+        reverseIntakeOn = false;
+        setVoltage(9);
+    }
+}
+public void runReverseIntake(){
+    if(reverseIntakeOn){
+        reverseIntakeOn = false;
+        setVoltage(0);
+    } else {
+        reverseIntakeOn = true;
+        intakeOn = false;
+        setVoltage(-9);
+    }
+}
+@Override
+public void periodic(){
+    SmartDashboard.putBoolean("intake on?", intMtrFrnt.getMotorVoltage().getValueAsDouble() > 7);
 }
 }

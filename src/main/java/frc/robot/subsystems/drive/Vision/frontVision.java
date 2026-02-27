@@ -49,7 +49,7 @@ import java.util.List;
  import org.photonvision.simulation.VisionSystemSim;
  import org.photonvision.targeting.PhotonTrackedTarget;
  
- public class frontVision {
+ public class FrontVision {
      private final PhotonCamera camera;
      private final PhotonPoseEstimator photonEstimator;
      private Matrix<N3, N1> curStdDevs;
@@ -63,7 +63,7 @@ import java.util.List;
       * @param estConsumer Lamba that will accept a pose estimate and pass it to your desired {@link
       *     edu.wpi.first.math.estimator.SwerveDrivePoseEstimator}
       */
-     public frontVision(EstimateConsumer estConsumer) {
+     public FrontVision(EstimateConsumer estConsumer) {
          this.estConsumer = estConsumer;
          camera = new PhotonCamera(kFrontCameraName);
  
@@ -97,7 +97,10 @@ import java.util.List;
      public void periodic() {
          Optional<EstimatedRobotPose> visionEst = Optional.empty();
          for (var change : camera.getAllUnreadResults()) {
-             visionEst = photonEstimator.update(change);
+            visionEst = photonEstimator.estimateCoprocMultiTagPose(change);
+            if (visionEst.isEmpty()) {
+                visionEst = photonEstimator.estimateLowestAmbiguityPose(change);
+            }
              updateEstimationStdDevs(visionEst, change.getTargets());
  
              if (Robot.isSimulation()) {

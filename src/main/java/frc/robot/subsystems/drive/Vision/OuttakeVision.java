@@ -49,7 +49,7 @@ import java.util.List;
  import org.photonvision.simulation.VisionSystemSim;
  import org.photonvision.targeting.PhotonTrackedTarget;
  
- public class leftVision {
+ public class OuttakeVision {
      private final PhotonCamera camera;
      private final PhotonPoseEstimator photonEstimator;
      private Matrix<N3, N1> curStdDevs;
@@ -63,12 +63,12 @@ import java.util.List;
       * @param estConsumer Lamba that will accept a pose estimate and pass it to your desired {@link
       *     edu.wpi.first.math.estimator.SwerveDrivePoseEstimator}
       */
-     public leftVision(EstimateConsumer estConsumer) {
+     public OuttakeVision(EstimateConsumer estConsumer) {
          this.estConsumer = estConsumer;
-         camera = new PhotonCamera(kLeftCameraName);
+         camera = new PhotonCamera(kOuttakeCameraName);
  
          photonEstimator =
-                 new PhotonPoseEstimator(kTagLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, kLeftRobotToCam);
+                 new PhotonPoseEstimator(kTagLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, kOuttakeRobotToCam);
          photonEstimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
  
          // ----- Simulation
@@ -88,7 +88,7 @@ import java.util.List;
              // targets.
              cameraSim = new PhotonCameraSim(camera, cameraProp);
              // Add the simulated camera to view the targets on this simulated field.
-             visionSim.addCamera(cameraSim, kLeftRobotToCam);
+             visionSim.addCamera(cameraSim, kOuttakeRobotToCam);
  
              cameraSim.enableDrawWireframe(true);
          }
@@ -97,7 +97,10 @@ import java.util.List;
      public void periodic() {
          Optional<EstimatedRobotPose> visionEst = Optional.empty();
          for (var change : camera.getAllUnreadResults()) {
-             visionEst = photonEstimator.update(change);
+            visionEst = photonEstimator.estimateCoprocMultiTagPose(change);
+            if (visionEst.isEmpty()) {
+                visionEst = photonEstimator.estimateLowestAmbiguityPose(change);
+            }
              updateEstimationStdDevs(visionEst, change.getTargets());
  
              if (Robot.isSimulation()) {

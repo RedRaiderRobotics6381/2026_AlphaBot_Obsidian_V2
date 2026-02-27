@@ -4,31 +4,36 @@
 
 package frc.robot;
 
+import com.pathplanner.lib.auto.AutoBuilder;
+
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.subsystems.drive.Vision.backVision;
-import frc.robot.subsystems.drive.Vision.frontVision;
-import frc.robot.subsystems.drive.Vision.leftVision;
-import frc.robot.subsystems.drive.Vision.rightVision;
+import frc.robot.subsystems.drive.Vision.BackVision;
+import frc.robot.subsystems.drive.Vision.FrontVision;
+import frc.robot.subsystems.drive.Vision.OuttakeVision;
+import frc.robot.subsystems.drive.Vision.RadioVision;
+import edu.wpi.first.wpilibj2.command.Commands;
 
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
 
   private final RobotContainer m_robotContainer;
 
-  private frontVision frontVision;
-  private backVision backVision;
-  private leftVision leftVision;
-  private rightVision rightVision;
+  private FrontVision frontVision;
+  private BackVision backVision;
+  private OuttakeVision outtakeVision;
+  private RadioVision radioVision;
 
   public Robot() {
     m_robotContainer = new RobotContainer();
-  
-    frontVision = new frontVision(m_robotContainer.drivetrain::addVisionMeasurement);
-    backVision = new backVision(m_robotContainer.drivetrain::addVisionMeasurement);
-    leftVision = new leftVision(m_robotContainer.drivetrain::addVisionMeasurement);
-    rightVision = new rightVision(m_robotContainer.drivetrain::addVisionMeasurement);
+    frontVision = new FrontVision(m_robotContainer.drivetrain::addVisionMeasurement);
+    backVision = new BackVision(m_robotContainer.drivetrain::addVisionMeasurement);
+    outtakeVision = new OuttakeVision(m_robotContainer.drivetrain::addVisionMeasurement);
+    radioVision = new RadioVision(m_robotContainer.drivetrain::addVisionMeasurement);
 
   }
 
@@ -38,9 +43,8 @@ public class Robot extends TimedRobot {
 
     frontVision.periodic();
     backVision.periodic();
-    leftVision.periodic();
-    rightVision.periodic();
-    System.out.println("hello");
+    outtakeVision.periodic();
+    radioVision.periodic();
 
   }
 
@@ -60,7 +64,7 @@ public class Robot extends TimedRobot {
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
     if (m_autonomousCommand != null) {
-      m_autonomousCommand.schedule();
+      CommandScheduler.getInstance().schedule(m_autonomousCommand);
     }
   }
 
@@ -75,6 +79,9 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
+    m_robotContainer.m_rotation.rotationEncoder.setPosition(0);
+       m_robotContainer.m_rotation.rotationMtr.setPosition(0);
+    m_robotContainer.m_intakeSlider.sliderEncoder.setPosition(0);
   }
 
   @Override
