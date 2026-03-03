@@ -14,7 +14,6 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.FollowPathCommand;
 
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -23,34 +22,17 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandGenericHID;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
-import frc.robot.Commands.AutoAimer;
-import frc.robot.Commands.AutoShooter;
-import frc.robot.Commands.DriveToYaw;
-// import frc.robot.Commands.AutoShooter;
-import frc.robot.Commands.IndexerControl;
-import frc.robot.Commands.IntakeRun;
-import frc.robot.Commands.OuttakeCmd;
-import frc.robot.Commands.OuttakeRun;
-import frc.robot.Constants.ConstantValues;
-import frc.robot.Constants.OuttakeConstants;
+import frc.robot.Commands.*;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.Secondary.Indexer;
-//import frc.robot.subsystems.Secondary.Climber;
-//import frc.robot.subsystems.Secondary.Indexer;
 import frc.robot.subsystems.Secondary.Intake;
 import frc.robot.subsystems.Secondary.IntakeSlider;
 import frc.robot.subsystems.Secondary.Outtake;
 import frc.robot.subsystems.Secondary.Rotation;
-//import frc.robot.subsystems.Secondary.Outtake;
-//import frc.robot.subsystems.Secondary.RotateSubsystem;
-//import frc.robot.subsystems.Secondary.Turret;
 import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
 import frc.robot.autos.AutoPicker;
 
 public class RobotContainer {
-
-    //private final RotateSubsystem m_RotateSubsystem = new RotateSubsystem();    
 
     public final Intake m_intake = new Intake();
     public final Indexer m_indexer = new Indexer();
@@ -89,18 +71,16 @@ public class RobotContainer {
     /* Path follower */
     private final SendableChooser<Command> autoChooser;
 
-    //public DriveToYaw driveToYaw = new DriveToYaw(drivetrain);
-
     // private final Turret m_turret = new Turret();
     // private final Climber m_climber = new Climber();
-    // private final AutoShooter m_autoShooter = new AutoShooter(m_outtake, m_RotateSubsystem, m_indexer, drivetrain, m_turret);
     private final OuttakeRun m_outtakeRun = new OuttakeRun(m_outtake, m_intake, m_intakeSlider, drivetrain);
     private final IntakeRun m_intakeRun = new IntakeRun(m_intake, m_intakeSlider);
     private final AutoAimer m_autoAimer = new AutoAimer(m_rotation, drivetrain);
     private final IndexerControl m_indexerControl = new IndexerControl(m_outtake, m_indexer, drivetrain, m_autoAimer);
     private final OuttakeCmd m_outtakeCmd = new OuttakeCmd(m_outtake, m_indexer);
-    private final DriveToYaw m_driveToYaw = new DriveToYaw(drivetrain, driveToAngle, joystick, MaxSpeed, MaxAngularRate);
-    private final AutoShooter m_autoShooter = new AutoShooter(m_outtake, m_rotation, m_indexer, drivetrain, m_outtakeRun, m_autoAimer, m_indexerControl, m_driveToYaw);
+    private final DriveToYaw m_driveToYaw = new DriveToYaw(drivetrain, driveToAngle, joystick, MaxSpeed);
+    private final ShootOver m_shootOver = new ShootOver(m_outtake, m_rotation, m_indexer);
+    private final AutoShooter m_autoShooter = new AutoShooter(m_outtakeRun, m_autoAimer, m_indexerControl, m_driveToYaw);
 
     public RobotContainer() {
         NamedCommands.registerCommand("OuttakeCmd", m_outtakeCmd);
@@ -140,18 +120,12 @@ public class RobotContainer {
         ));
         joystick.rightBumper().onTrue(Commands.runOnce(() -> m_intake.runIntake()));
         // joystick.x().whileTrue(m_indexer.runIndexer());
-        joystick.x().whileTrue(m_indexerControl);
+        joystick.x().whileTrue(m_shootOver);
         joystick.a().onTrue(m_outtakeRun);
         joystick.b().onTrue(Commands.runOnce(() -> m_intake.runReverseIntake()));
         joystick.y().whileTrue(m_autoShooter);
-        // joystick.leftTrigger().whileTrue(m_rotation.runRotation());
-        // joystick.rightTrigger().whileTrue(m_rotation.runRotationReverse());
         joystick.leftBumper().onTrue(m_intakeRun);
-        // joystick.rightBumper().whileTrue(m_driveToYaw);
 
-        // engineer.button(2).onTrue(Commands.runOnce(() -> m_intakeSlider.setRotateAngle(8)));
-        // engineer.button(3).whileTrue(m_outtakeRun);
-        // engineer.button(8).whileTrue(m_intakeRun);
         // Idle while the robot is disabled. This ensures the configured
         // neutral mode is applied to the drive motors while disabled.
         final var idle = new SwerveRequest.Idle();

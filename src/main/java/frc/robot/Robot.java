@@ -4,11 +4,6 @@
 
 package frc.robot;
 
-import com.pathplanner.lib.auto.AutoBuilder;
-
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -16,7 +11,6 @@ import frc.robot.subsystems.drive.Vision.BackVision;
 import frc.robot.subsystems.drive.Vision.FrontVision;
 import frc.robot.subsystems.drive.Vision.OuttakeVision;
 import frc.robot.subsystems.drive.Vision.RadioVision;
-import edu.wpi.first.wpilibj2.command.Commands;
 
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;

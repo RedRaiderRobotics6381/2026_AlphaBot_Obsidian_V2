@@ -2,14 +2,11 @@ package frc.robot.subsystems.Secondary;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.*;
 import frc.robot.generated.TunerConstants;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
-import com.ctre.phoenix6.configs.DifferentialSensorsConfigs;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
@@ -17,7 +14,6 @@ import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.DifferentialSensorSourceValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -52,11 +48,6 @@ public class IntakeSlider extends SubsystemBase {
         sliderLdrMtrCfg.MotorOutput.NeutralMode = NeutralModeValue.Brake;
         sliderLdrMtrCfg.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
-//         sliderLdrMtrCfg.withDifferentialSensors(
-//             new DifferentialSensorsConfigs()
-//             .withDifferentialRemoteSensorID(4)
-//             .withDifferentialSensorSource(DifferentialSensorSourceValue.RemoteCANcoder)
-// );
         sliderLdrMtrCfg.withFeedback(new FeedbackConfigs().withRemoteCANcoder(sliderEncoder).withRotorToSensorRatio(3));
 
         sliderLdrMtrCfg.CurrentLimits.SupplyCurrentLimitEnable = true;
@@ -108,16 +99,6 @@ public class IntakeSlider extends SubsystemBase {
       () -> setVoltage(0), 
       this);
   }
-
-    // public FunctionalCommand setRotateAngleCmd(double pos) {
-    //     return new FunctionalCommand(
-    //             () -> {
-    //             },
-    //             () -> setRotateAngle(pos), interrupted -> {
-    //             },
-    //             () -> (Math.abs(pos - sliderLdrMtr.getPosition().getValueAsDouble()) <= 2.0 || (Math.abs(pos - sliderLdrMtr.getPosition().getValueAsDouble()) <= 4.0 && Math.abs(sliderLdrMtr.getVelocity().getValueAsDouble()) <= 5.0)),
-    //             this);
-    // }
     @Override
     public void periodic(){
         // distance = revToDist(sliderEncoder.getPosition().getValueAsDouble());

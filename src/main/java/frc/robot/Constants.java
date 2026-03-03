@@ -33,7 +33,7 @@ public class Constants {
     public static final int ROTATION_MOTOR_PORT = 28;
     public static final int ROTATION_ACCELERATION_CONSTRAINT = 9999; 
     public static final int ROTATION_VELOCITY_CONSTRAINT = 9999; 
-    public static final double ROTATION_INITIAL_ANGLE = 89; //TODO double-check
+    public static final double ROTATION_INITIAL_ANGLE = 89;
   }
 
   public static class OuttakeConstants {
@@ -76,7 +76,7 @@ public class Constants {
 
 
   public static class PhysicalConstants {
-    public static double SHOOTER_HEIGHT = 24; //TODO Change Later!
+    public static double SHOOTER_HEIGHT = 24;
     
   }
   public static class ConstantValues {
@@ -84,7 +84,9 @@ public class Constants {
     public static double SHOOTER_SPEED_NEAR = 298;
     public static double SHOOTER_RPS_FAR = 27;
     public static double SHOOTER_SPEED_FAR = 320;
-    
+    public static double SHOOT_OVER_ANGLE = 70;
+    public static double SHOOT_OVER_SPEED = 30;
+    public static double OUTTAKE_IDLE_SPEED = 10;
   }
   public static class FieldConstants {
     public static double SMALLEST_RADIUS_OF_HUB = 25.5; //inches

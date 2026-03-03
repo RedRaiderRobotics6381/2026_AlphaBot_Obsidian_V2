@@ -7,7 +7,6 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
@@ -46,7 +45,9 @@ public class Indexer extends SubsystemBase {
     uptakeWheelMtr.getConfigurator().apply(indexMtrCon);
     uptakeBeltMtr.getConfigurator().apply(indexMtrCon);
   }
-
+/** Sets the  indexer's voltage.
+ * @param volt how many volts you want to set the indexer to.
+*/
   public void setVoltage(double volt) {
     indexMtr.setControl(voltageCntrl.withOutput(volt));
   }
@@ -61,10 +62,6 @@ public class Indexer extends SubsystemBase {
                 () -> (Math.abs(- indexMtr.getMotorVoltage().getValueAsDouble()) <= 5000),
                 this);
     }
-
-  @Override
-  public void periodic() {
-  }
 
   public Command runIndexer(){
     return Commands.runEnd(

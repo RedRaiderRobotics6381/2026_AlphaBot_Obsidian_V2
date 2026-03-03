@@ -1,15 +1,7 @@
 package frc.robot.Commands;
 
-import com.pathplanner.lib.path.PathConstraints;
-
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Constants.*;
-import frc.robot.subsystems.Secondary.Indexer;
-import frc.robot.subsystems.Secondary.Outtake;
 import frc.robot.subsystems.Secondary.Rotation;
 import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
 

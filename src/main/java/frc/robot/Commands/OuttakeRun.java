@@ -2,7 +2,6 @@ package frc.robot.Commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.*;
-import frc.robot.subsystems.Secondary.Indexer;
 import frc.robot.subsystems.Secondary.Intake;
 import frc.robot.subsystems.Secondary.IntakeSlider;
 import frc.robot.subsystems.Secondary.Outtake;
@@ -43,6 +42,6 @@ public class OuttakeRun extends Command {
     }
     @Override
     public void end(boolean interrupted){
-        m_outtake.setVelocity(0);
+        m_outtake.setVelocity(ConstantValues.OUTTAKE_IDLE_SPEED);
     }
 } 
