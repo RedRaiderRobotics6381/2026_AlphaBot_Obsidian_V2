@@ -75,20 +75,31 @@ public class Rotation extends SubsystemBase {
         rotationEncoder.getConfigurator().apply(rotEncCfg);
         
     }
-
+    /** sets what angle it's rotated to
+     * @param angle the angle that sets how much it rotates
+     */
     public void setRotateAngle(double angle) {
         angle = angToRot(angle);
         rotationMtr.setControl(motionMagicVoltage.withPosition(angle));
     }
 
+    /** gets the angle needed to rotate
+     * @return the value in rotations
+     */
     public double getAngle(){
         return rotToAng(rotationMtr.getPosition().getValueAsDouble());
     }
 
+    /** sets the voltage
+     * @param volt the amount of volts to use
+     */
     public void setVoltage(double volt) {
         rotationMtr.setControl(voltageCntrl.withOutput(volt));
     }
 
+   /** runs the rotations
+    * @return the runEnd Command that runs or ends the rotation 
+    */ 
   public Command runRotation(){
     return Commands.runEnd(
       () -> setVoltage(-3), 
@@ -96,6 +107,9 @@ public class Rotation extends SubsystemBase {
       this);
   }
 
+  /** runs a command that reverses the rotation
+   * @return the runEnd Command that runs or ends the rotation
+   */
     public Command runRotationReverse(){
     return Commands.runEnd(
       () -> setVoltage(3), 
@@ -103,7 +117,10 @@ public class Rotation extends SubsystemBase {
       this);
   }
 
-
+/** a command to rotate to a a certain angle
+ * @param pos the position that the angle should be in
+ * @return a Funtional Command that shows what happens when ran and when interrupted
+ */
     public FunctionalCommand setRotateAngleCmd(double pos) {
         return new FunctionalCommand(
                 () -> {
@@ -114,10 +131,18 @@ public class Rotation extends SubsystemBase {
                 this);
     }
 
+    /** converts rotations to an angle
+     * @param rotations rotations in it
+     * @return rotations multiplied by the value needed to convert added to the initial angle value
+     */
     public double rotToAng(double rotations){
         return (rotations * 360 * 12/35) + RotationConstants.ROTATION_INITIAL_ANGLE;
     }
 
+    /** converts from angles to rotations
+     * @param angle angle it wants to be
+     * @return angle subtracted by the inital angle and then divided by a converting value
+     */
     public double angToRot(double angle){
         return (angle - RotationConstants.ROTATION_INITIAL_ANGLE) / 360
         * 35/12;

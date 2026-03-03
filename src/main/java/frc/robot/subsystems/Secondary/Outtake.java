@@ -47,8 +47,9 @@ public class Outtake extends SubsystemBase {
     }
 
 
-    /** @param speed in rotations per second */
-
+    /** makes the outtake run when true, makes it not run when false by using 0 volts
+     * @param speed in rotations per second 
+     */
     public void runOuttake(double speed) {
         if (!run) {
             run = true;
@@ -59,6 +60,10 @@ public class Outtake extends SubsystemBase {
         }
 
     }
+
+    /** sets the outtake velocity using speed
+     * @param speed the amount of speed used
+     */
     public void setVelocity(double speed){
         wheelSpeedMtr.setControl(motionMagicVelocityVoltage.withVelocity(speed));
     }
