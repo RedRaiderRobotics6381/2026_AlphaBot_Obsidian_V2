@@ -48,16 +48,16 @@ public class Robot extends TimedRobot {
 
   }
 
-  @Override
-  public void disabledInit() {
+  // @Override
+  // public void disabledInit() {
 
-  }
+  // }
 
-  @Override
-  public void disabledPeriodic() {}
+  // @Override
+  // public void disabledPeriodic() {}
 
-  @Override
-  public void disabledExit() {}
+  // @Override
+  // public void disabledExit() {}
 
   @Override
   public void autonomousInit() {
@@ -68,39 +68,38 @@ public class Robot extends TimedRobot {
     }
   }
 
-  @Override
-  public void autonomousPeriodic() {}
+  // @Override
+  // public void autonomousPeriodic() {}
 
-  @Override
-  public void autonomousExit() {}
+  // @Override
+  // public void autonomousExit() {}
 
   @Override
   public void teleopInit() {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
-    m_robotContainer.m_rotation.rotationEncoder.setPosition(0);
-       m_robotContainer.m_rotation.rotationMtr.setPosition(0);
+    m_robotContainer.m_rotation.rotationMtr.setPosition(0);
     m_robotContainer.m_intakeSlider.sliderEncoder.setPosition(0);
   }
 
-  @Override
-  public void teleopPeriodic() {}
+  // @Override
+  // public void teleopPeriodic() {}
 
-  @Override
-  public void teleopExit() {}
+  // @Override
+  // public void teleopExit() {}
 
   @Override
   public void testInit() {
     CommandScheduler.getInstance().cancelAll();
   }
 
-  @Override
-  public void testPeriodic() {}
+  // @Override
+  // public void testPeriodic() {}
 
-  @Override
-  public void testExit() {}
+  // @Override
+  // public void testExit() {}
 
-  @Override
-  public void simulationPeriodic() {}
+  // @Override
+  // public void simulationPeriodic() {}
 }

@@ -22,6 +22,8 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -41,6 +43,10 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     private static final double kSimLoopPeriod = 0.005; // 5 ms
     private Notifier m_simNotifier = null;
     private double m_lastSimTime;
+    public double distanceToHub;
+    public double yaw;
+    private double xDistanceToHub;
+    private int shooterPos;
 
     /* Blue alliance sees forward as 0 degrees (toward red alliance wall) */
     private static final Rotation2d kBlueAlliancePerspectiveRotation = Rotation2d.kZero;
@@ -136,6 +142,13 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         super(drivetrainConstants, modules);
         if (Utils.isSimulation()) {
             startSimThread();
+        }
+        if(DriverStation.getAlliance().get() == Alliance.Red){
+            xDistanceToHub = 12.2; // was 11.9
+            shooterPos = 1;
+        } else {
+            xDistanceToHub = 4.925; // was 4.625
+            shooterPos = -1;
         }
         configureAutoBuilder();
     }
@@ -258,7 +271,6 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     public Command sysIdDynamic(SysIdRoutine.Direction direction) {
         return m_sysIdRoutineToApply.dynamic(direction);
     }
-
     @Override
     public void periodic() {
         /*
@@ -278,7 +290,11 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                 m_hasAppliedOperatorPerspective = true;
             });
         }
-        SmartDashboard.putNumber("X", getState().Pose.getX());
+            distanceToHub =  Math.sqrt(Math.pow(xDistanceToHub - getState().Pose.getX(), 2) + Math.pow(4.3 - getState().Pose.getY(), 2)) * 100 / 2.54;
+            yaw = Math.atan((4.3 - getState().Pose.getY())// + shooterPos * ((15.945 * Math.sin(getState().Pose.getRotation().getRadians() + 0.7188) * 2.54) / 100)))
+            /(xDistanceToHub - getState().Pose.getX()));// + shooterPos * ((15.945 * Math.cos(getState().Pose.getRotation().getRadians() + 0.7188) * 2.54) / 100)))); // was 4.0259
+            SmartDashboard.putNumber("distance", distanceToHub);
+
     }
 
     private void startSimThread() {

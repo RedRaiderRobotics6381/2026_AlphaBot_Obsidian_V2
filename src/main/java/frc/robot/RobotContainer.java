@@ -14,6 +14,8 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.FollowPathCommand;
 
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -22,6 +24,9 @@ import edu.wpi.first.wpilibj2.command.button.CommandGenericHID;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
+import frc.robot.Commands.AutoAimer;
+import frc.robot.Commands.AutoShooter;
+import frc.robot.Commands.DriveToYaw;
 // import frc.robot.Commands.AutoShooter;
 import frc.robot.Commands.IndexerControl;
 import frc.robot.Commands.IntakeRun;
@@ -60,6 +65,9 @@ public class RobotContainer {
     private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
             .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
+    private final SwerveRequest.FieldCentricFacingAngle driveToAngle = new SwerveRequest.FieldCentricFacingAngle()
+    .withDeadband(MaxSpeed * 0.1) // Add a 10% deadband
+            .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
     private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
     private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
     private final SwerveRequest.RobotCentric forwardStraight = new SwerveRequest.RobotCentric()
@@ -68,6 +76,7 @@ public class RobotContainer {
     private final Telemetry logger = new Telemetry(MaxSpeed);
 
     private final CommandXboxController joystick = new CommandXboxController(0);
+    private final XboxController joystick_HID = joystick.getHID();
     private final CommandGenericHID engineer = new CommandGenericHID(1);
 
 
@@ -85,10 +94,13 @@ public class RobotContainer {
     // private final Turret m_turret = new Turret();
     // private final Climber m_climber = new Climber();
     // private final AutoShooter m_autoShooter = new AutoShooter(m_outtake, m_RotateSubsystem, m_indexer, drivetrain, m_turret);
-    private final OuttakeRun m_outtakeRun = new OuttakeRun(m_outtake, m_intake, m_intakeSlider);
+    private final OuttakeRun m_outtakeRun = new OuttakeRun(m_outtake, m_intake, m_intakeSlider, drivetrain);
     private final IntakeRun m_intakeRun = new IntakeRun(m_intake, m_intakeSlider);
-    private final IndexerControl m_indexerControl = new IndexerControl(m_outtake, m_indexer);
+    private final AutoAimer m_autoAimer = new AutoAimer(m_rotation, drivetrain);
+    private final IndexerControl m_indexerControl = new IndexerControl(m_outtake, m_indexer, drivetrain, m_autoAimer);
     private final OuttakeCmd m_outtakeCmd = new OuttakeCmd(m_outtake, m_indexer);
+    private final DriveToYaw m_driveToYaw = new DriveToYaw(drivetrain, driveToAngle, joystick, MaxSpeed, MaxAngularRate);
+    private final AutoShooter m_autoShooter = new AutoShooter(m_outtake, m_rotation, m_indexer, drivetrain, m_outtakeRun, m_autoAimer, m_indexerControl, m_driveToYaw);
 
     public RobotContainer() {
         NamedCommands.registerCommand("OuttakeCmd", m_outtakeCmd);
@@ -111,29 +123,31 @@ public class RobotContainer {
         drivetrain.setDefaultCommand(
             // Drivetrain will execute this command periodically
             drivetrain.applyRequest(() ->
-                drive.withVelocityX(-joystick.getLeftY() * MaxSpeed * 0.75) // Drive forward with negative Y (forward)
-                    .withVelocityY(-joystick.getLeftX() * MaxSpeed * 0.75) // Drive left with negative X (left)
-                    .withRotationalRate(-joystick.getRightX() * MaxAngularRate * 0.75) // Drive counterclockwise with negative X (left)
+                drive.withVelocityX(-joystick_HID.getLeftY() * MaxSpeed * 0.75) // Drive forward with negative Y (forward)
+                    .withVelocityY(-joystick_HID.getLeftX() * MaxSpeed * 0.75) // Drive left with negative X (left)
+                    .withRotationalRate(-joystick_HID.getRightX() * MaxAngularRate * 0.75) // Drive counterclockwise with negative X (left)
             )
         );
         joystick.leftTrigger().whileTrue(drivetrain.applyRequest(() ->
-                drive.withVelocityX(-joystick.getLeftY() * MaxSpeed * 1.5) // Drive forward with negative Y (forward)
-                    .withVelocityY(-joystick.getLeftX() * MaxSpeed * 1.5) // Drive left with negative X (left)
-                    .withRotationalRate(-joystick.getRightX() * MaxAngularRate * 1.5) // Drive counterclockwise with negative X (left)
+                drive.withVelocityX(-joystick_HID.getLeftY() * MaxSpeed * 1.5) // Drive forward with negative Y (forward)
+                    .withVelocityY(-joystick_HID.getLeftX() * MaxSpeed * 1.5) // Drive left with negative X (left)
+                    .withRotationalRate(-joystick_HID.getRightX() * MaxAngularRate * 1.5) // Drive counterclockwise with negative X (left)
         ));
         joystick.rightTrigger().whileTrue(drivetrain.applyRequest(() ->
-                drive.withVelocityX(-joystick.getLeftY() * MaxSpeed * 0.5) // Drive forward with negative Y (forward)
-                    .withVelocityY(-joystick.getLeftX() * MaxSpeed * 0.5) // Drive left with negative X (left)
-                    .withRotationalRate(-joystick.getRightX() * MaxAngularRate * 0.5) // Drive counterclockwise with negative X (left)
+                drive.withVelocityX(-joystick_HID.getLeftY() * MaxSpeed * 0.5) // Drive forward with negative Y (forward)
+                    .withVelocityY(-joystick_HID.getLeftX() * MaxSpeed * 0.5) // Drive left with negative X (left)
+                    .withRotationalRate(-joystick_HID.getRightX() * MaxAngularRate * 0.5) // Drive counterclockwise with negative X (left)
         ));
-        //joystick.rightBumper().onTrue(Commands.runOnce(() -> m_intake.runIntake()));
+        joystick.rightBumper().onTrue(Commands.runOnce(() -> m_intake.runIntake()));
         // joystick.x().whileTrue(m_indexer.runIndexer());
         joystick.x().whileTrue(m_indexerControl);
         joystick.a().onTrue(m_outtakeRun);
         joystick.b().onTrue(Commands.runOnce(() -> m_intake.runReverseIntake()));
+        joystick.y().whileTrue(m_autoShooter);
         // joystick.leftTrigger().whileTrue(m_rotation.runRotation());
         // joystick.rightTrigger().whileTrue(m_rotation.runRotationReverse());
         joystick.leftBumper().onTrue(m_intakeRun);
+        // joystick.rightBumper().whileTrue(m_driveToYaw);
 
         // engineer.button(2).onTrue(Commands.runOnce(() -> m_intakeSlider.setRotateAngle(8)));
         // engineer.button(3).whileTrue(m_outtakeRun);
@@ -164,39 +178,11 @@ public class RobotContainer {
             forwardStraight.withVelocityX(-0.5).withVelocityY(0))
         );
 
-        // Run SysId routines when holding back/start and X/Y.
-        // Note that each routine should be run exactly once in a single log.
-        joystick.back().and(joystick.y()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
-        joystick.back().and(joystick.x()).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
-        joystick.start().and(joystick.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
-        joystick.start().and(joystick.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
-        // reset the field-centric heading on left bumper press
+        // reset the field-centric heading on start press
         joystick.start().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
         drivetrain.registerTelemetry(logger::telemeterize);
 
-        // joystick.y().whileTrue(Commands.runOnce(() -> {
-        //     Pose2d currentPose = drivetrain.getState().Pose;
-      
-        //     Pose2d startPos = new Pose2d(currentPose.getTranslation(), new Rotation2d());
-        //     Pose2d endPos = new Pose2d(currentPose.getTranslation().plus(new Translation2d(2.0, 0.0)), new Rotation2d());
-
-        //     List<Waypoint> waypoints = PathPlannerPath.waypointsFromPoses(startPos, endPos);
-        //         PathPlannerPath path = new PathPlannerPath(
-        //         waypoints, 
-        //         new PathConstraints(
-        //             4.0, 4.0, 
-        //             Units.degreesToRadians(360), Units.degreesToRadians(540)
-        //     ),
-        //     null, // Ideal starting state can be null for on-the-fly paths
-        //     new GoalEndState(0.0, currentPose.getRotation())
-        //     );
-
-        //     // Prevent this path from being flipped on the red alliance, since the given positions are already correct
-        //     path.preventFlipping = true;
-
-        //     AutoBuilder.followPath(path).schedule();
-        // }));
     }
 
     public Command getAutonomousCommand() {

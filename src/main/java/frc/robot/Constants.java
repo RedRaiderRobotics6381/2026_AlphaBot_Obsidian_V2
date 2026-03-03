@@ -20,8 +20,6 @@ public class Constants {
 
   public static class IntakeConstants {
     public static final int INTAKE_MOTOR_PORT_1 = 36;
-    public static final int INTAKE_MOTOR_PORT_2 = 37;
-
   }
 
   public static class IntakeSliderConstants {
@@ -78,12 +76,14 @@ public class Constants {
 
 
   public static class PhysicalConstants {
-    public static double SHOOTER_HEIGHT = 0; //TODO Change Later!
+    public static double SHOOTER_HEIGHT = 24; //TODO Change Later!
     
   }
   public static class ConstantValues {
-    public static double SHOOTER_RPS = 30; //TODO Change Later
-    public static double SHOOTER_SPEED = 0; //TODO Change Later
+    public static double SHOOTER_RPS_NEAR = 25;
+    public static double SHOOTER_SPEED_NEAR = 298;
+    public static double SHOOTER_RPS_FAR = 27;
+    public static double SHOOTER_SPEED_FAR = 320;
     
   }
   public static class FieldConstants {

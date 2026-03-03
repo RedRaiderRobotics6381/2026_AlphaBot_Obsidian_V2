@@ -20,7 +20,7 @@ public class Outtake extends SubsystemBase {
     private VoltageOut voltageCntrl;
     public boolean run;
 
-    private double kP = 0.47, kI = 100.0, kD = 0.00005, kS = 0.45, kV = 0.17;
+    private double kP = 1.0, kI = 0.0, kD = 0.0, kS = 0.42, kV = 0.13;
     public boolean close;
 
     public Outtake() {
@@ -61,20 +61,22 @@ public class Outtake extends SubsystemBase {
 
     /** @param velocity in rotations per second */
 
-    public void setVelocity() {
+    public void runOuttake(double speed) {
         if (!run) {
             run = true;
-            wheelSpeedMtr.setControl(motionMagicVelocityVoltage.withVelocity(ConstantValues.SHOOTER_RPS));
+            wheelSpeedMtr.setControl(motionMagicVelocityVoltage.withVelocity(speed));
         } else {
             run = false;
             wheelSpeedMtr.setControl(voltageCntrl.withOutput(0));
         }
 
     }
-    
-    @Override
-    public void periodic() {
-        SmartDashboard.putBoolean("Outtake On", wheelSpeedMtr.getVelocity().getValueAsDouble() > 1);
-        SmartDashboard.putNumber("Cool Wheel Velocity", wheelSpeedMtr.getVelocity().getValueAsDouble());
+    public void setVelocity(double speed){
+        wheelSpeedMtr.setControl(motionMagicVelocityVoltage.withVelocity(speed));
     }
+    // @Override
+    // public void periodic() {
+    //     SmartDashboard.putBoolean("Outtake On", wheelSpeedMtr.getVelocity().getValueAsDouble() > 1);
+    //     SmartDashboard.putNumber("Cool Wheel Velocity", wheelSpeedMtr.getVelocity().getValueAsDouble());
+    // }
 }

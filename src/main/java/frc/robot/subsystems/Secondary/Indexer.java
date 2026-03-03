@@ -64,8 +64,6 @@ public class Indexer extends SubsystemBase {
 
   @Override
   public void periodic() {
-      SmartDashboard.putNumber("Outtake Speed", indexMtr.getMotorVoltage().getValueAsDouble());
-      // SmartDashboard.putBoolean("CoralSensor", FuelSensor.get());
   }
 
   public Command runIndexer(){

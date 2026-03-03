@@ -120,11 +120,8 @@ public class IntakeSlider extends SubsystemBase {
     // }
     @Override
     public void periodic(){
-        distance = revToDist(sliderEncoder.getPosition().getValueAsDouble());
-        distanceMtr = revToDist(sliderLdrMtr.getPosition().getValueAsDouble());
-        //sliderLdrMtr.setPosition(sliderEncoder.getPosition().getValueAsDouble());
-        SmartDashboard.putNumber("distance", distance);
-        SmartDashboard.putNumber("distance Motor", distanceMtr);
+        // distance = revToDist(sliderEncoder.getPosition().getValueAsDouble());
+        // SmartDashboard.putNumber("distance", distance);
     }
 }
 

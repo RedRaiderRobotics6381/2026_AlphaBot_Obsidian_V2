@@ -17,7 +17,6 @@ import frc.robot.generated.TunerConstants;
 
 public class Intake extends SubsystemBase {
     public TalonFXS intMtrFrnt;
-    public TalonFXS intMtrBck;
     private TalonFXSConfiguration intVelMtrLdrCfg;
     private VoltageOut voltageCntrl;
     public boolean intakeOn;
@@ -26,7 +25,7 @@ public class Intake extends SubsystemBase {
 public Intake() {
     intakeOn = false;
     intMtrFrnt = new TalonFXS(IntakeConstants.INTAKE_MOTOR_PORT_1, TunerConstants.kCANBus);
-    intMtrBck = new TalonFXS(IntakeConstants.INTAKE_MOTOR_PORT_2, TunerConstants.kCANBus);
+    
     //intMtrBck.setControl(new Follower(IntakeConstants.INTAKE_MOTOR_PORT_1, MotorAlignmentValue.Aligned));
 
     intVelMtrLdrCfg = new TalonFXSConfiguration();
@@ -38,12 +37,11 @@ public Intake() {
 
     intVelMtrLdrCfg.CurrentLimits.SupplyCurrentLimitEnable = true;
     intVelMtrLdrCfg.CurrentLimits.StatorCurrentLimitEnable = true;
-    intVelMtrLdrCfg.CurrentLimits.SupplyCurrentLimit = 50.0;
-    intVelMtrLdrCfg.CurrentLimits.StatorCurrentLimit = 130.0;
+    intVelMtrLdrCfg.CurrentLimits.SupplyCurrentLimit = 400.0;
+    intVelMtrLdrCfg.CurrentLimits.StatorCurrentLimit = 800.0;
 
 
     intMtrFrnt.getConfigurator().apply(intVelMtrLdrCfg);
-    intMtrBck.getConfigurator().apply(intVelMtrLdrCfg);
 }
 
     public FunctionalCommand setVoltageCmd(double volt) {
@@ -61,7 +59,6 @@ public Intake() {
 
 public void setVoltage(double volt) {
     intMtrFrnt.setControl(voltageCntrl.withOutput(Math.signum(volt) * (Math.abs(volt) + 3)));
-    intMtrBck.setControl(voltageCntrl.withOutput(Math.signum(volt) * (Math.abs(volt) - 3)));
 }
 
 public void runIntake(){
@@ -83,9 +80,5 @@ public void runReverseIntake(){
         intakeOn = false;
         setVoltage(-9);
     }
-}
-@Override
-public void periodic(){
-    SmartDashboard.putBoolean("intake on?", intMtrFrnt.getMotorVoltage().getValueAsDouble() > 7);
 }
 }

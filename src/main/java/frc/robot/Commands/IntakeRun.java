@@ -22,9 +22,4 @@ public class IntakeRun extends Command {
     public boolean isFinished(){
         return true;
     }
-
-    @Override
-    public void end(boolean interrupted){
-        System.out.println("hello!");
-    }
 } 

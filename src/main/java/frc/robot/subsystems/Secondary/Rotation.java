@@ -30,7 +30,7 @@ public class Rotation extends SubsystemBase {
     private MotionMagicVoltage motionMagicVoltage;
     double angle;
 
-    private double kP = 10.00, kI = 0.0, kD = 0.0,  kFF;
+    private double kP = 34.0, kI = 0.0, kD = 0.0, kS = 0.4, kFF;
     public boolean close;
 
     public Rotation() {
@@ -47,14 +47,14 @@ public class Rotation extends SubsystemBase {
 
         rotationMtrCfg.CurrentLimits.SupplyCurrentLimitEnable = true;
         rotationMtrCfg.CurrentLimits.StatorCurrentLimitEnable = true;
-        rotationMtrCfg.CurrentLimits.SupplyCurrentLimit = 30.0;
-        rotationMtrCfg.CurrentLimits.StatorCurrentLimit = 50.0;
+        rotationMtrCfg.CurrentLimits.SupplyCurrentLimit = 100.0;
+        rotationMtrCfg.CurrentLimits.StatorCurrentLimit = 120.0;
 
         rotationMtrCfg.withSoftwareLimitSwitch(
             new SoftwareLimitSwitchConfigs()
                 .withForwardSoftLimitEnable(true)
                 .withReverseSoftLimitEnable(true)
-                .withForwardSoftLimitThreshold(angToRot(93))
+                .withForwardSoftLimitThreshold(angToRot(110)) // Larger
                 .withReverseSoftLimitThreshold(angToRot(30)));
 
         rotationMtrCfg.Feedback.SensorToMechanismRatio = 12 / 35;
@@ -63,6 +63,7 @@ public class Rotation extends SubsystemBase {
         rotationMtrCfg.Slot0.kI = kI;
         rotationMtrCfg.Slot0.kD = kD;
         rotationMtrCfg.Slot0.kG = kFF;
+        rotationMtrCfg.Slot0.kS = kS;
         rotationMtrCfg.Slot0.GravityType = GravityTypeValue.Arm_Cosine;
         rotationMtrCfg.Slot0.StaticFeedforwardSign = StaticFeedforwardSignValue.UseClosedLoopSign;
 
@@ -79,6 +80,10 @@ public class Rotation extends SubsystemBase {
     public void setRotateAngle(double angle) {
         angle = angToRot(angle);
         rotationMtr.setControl(motionMagicVoltage.withPosition(angle));
+    }
+
+    public double getAngle(){
+        return rotToAng(rotationMtr.getPosition().getValueAsDouble());
     }
 
     public void setVoltage(double volt) {
@@ -121,11 +126,8 @@ public class Rotation extends SubsystemBase {
 
     @Override
     public void periodic(){
-        angle = rotToAng(rotationMtr.getPosition().getValueAsDouble());
-        //rotationMtr.setPosition(rotationEncoder.getPosition().getValueAsDouble());
-        SmartDashboard.putNumber("relative Postion", rotationMtr.getPosition().getValueAsDouble());
-        SmartDashboard.putNumber("absolute Postion", angToRot(45));
-        SmartDashboard.putNumber("angle", angle);
+        // angle = rotToAng(rotationMtr.getPosition().getValueAsDouble());
+        // SmartDashboard.putNumber("angle", angle);
 
     }
 }
