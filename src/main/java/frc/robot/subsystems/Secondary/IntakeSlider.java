@@ -72,7 +72,7 @@ public class IntakeSlider extends SubsystemBase {
     public void setRotateAngle() {
         if (!out) {
             out = true;
-            sliderLdrMtr.setControl(motionMagicVoltage.withPosition(distToRev(13)));
+            sliderLdrMtr.setControl(motionMagicVoltage.withPosition(distToRev(13.5)));
         } else {
             out = false;
             sliderLdrMtr.setControl(motionMagicVoltage.withPosition(0));

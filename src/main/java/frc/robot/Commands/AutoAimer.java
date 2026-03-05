@@ -25,7 +25,7 @@ public class AutoAimer extends Command {
 
     @Override
     public void execute(){
-        if(drivetrain.distanceToHub < 70){
+        if(drivetrain.distanceToHub < ConstantValues.DISTANCE_TO_SHOOT){
             lowerBoundAngle = Math.atan((Math.pow(ConstantValues.SHOOTER_SPEED_NEAR, 2) + 
                           Math.sqrt(Math.pow(ConstantValues.SHOOTER_SPEED_NEAR,4) - 
                           384 * (384 * Math.pow(drivetrain.distanceToHub - FieldConstants.SMALLEST_RADIUS_OF_HOLE, 2) + 

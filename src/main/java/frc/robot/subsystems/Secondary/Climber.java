@@ -1,81 +1,95 @@
-// package frc.robot.subsystems.Secondary;
+package frc.robot.subsystems.Secondary;
 
-// import com.ctre.phoenix6.configs.TalonFXConfiguration;
-// import com.ctre.phoenix6.controls.Follower;
-// import com.ctre.phoenix6.controls.MotionMagicVoltage;
-// import com.ctre.phoenix6.hardware.TalonFX;
-// import com.ctre.phoenix6.signals.InvertedValue;
-// import com.ctre.phoenix6.signals.MotorAlignmentValue;
-// import com.ctre.phoenix6.signals.NeutralModeValue;
-// import edu.wpi.first.wpilibj.DigitalInput;
-// import edu.wpi.first.wpilibj2.command.FunctionalCommand;
-// import edu.wpi.first.wpilibj2.command.SubsystemBase;
-// import frc.robot.Constants.*;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.*;
+import frc.robot.generated.TunerConstants;
 
-// public class Climber extends SubsystemBase {
-//     public TalonFX climbMtrLdr;
-//     private TalonFX climbMtrFlw;
-//     private TalonFXConfiguration  climbConfigLdr;
-//     private MotionMagicVoltage motionMagicVoltage;
+import com.ctre.phoenix6.configs.CANcoderConfiguration;
+import com.ctre.phoenix6.configs.FeedbackConfigs;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.Follower;
+import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import com.ctre.phoenix6.controls.VoltageOut;
+import com.ctre.phoenix6.hardware.CANcoder;
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.MotorAlignmentValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.ctre.phoenix6.signals.SensorDirectionValue;
 
-//     private double kP = 0.15, kI = 0, kD = 0.075, kFF = 0;
-//     public DigitalInput limitSw;
-//     private boolean climberInitialized;
+public class Climber extends SubsystemBase {   
+    public TalonFX climberMtr;
+    private TalonFXConfiguration climberMtrCfg;
+    private VoltageOut voltageCntrl;
+    private MotionMagicVoltage motionMagicVoltage;
+    double distance;
+    double distanceMtr;
+    public boolean out;
 
-//     public Climber() {
-//         climbMtrLdr = new TalonFX(ClimberConstants.LEFT_CLIMBER_MOTOR_PORT);
-//         climbMtrFlw = new TalonFX(ClimberConstants.RIGHT_CLIMBER_MOTOR_PORT);
-//         climbMtrFlw.setControl(new Follower(ClimberConstants.LEFT_CLIMBER_MOTOR_PORT, MotorAlignmentValue.Aligned));
+    private double kP = 0.0, kI = 0.0, kD = 0.0;
+    public boolean close;
 
-//         climbConfigLdr = new TalonFXConfiguration();
-//         motionMagicVoltage = new MotionMagicVoltage(0.0).withSlot(0);
+    public Climber() {
+        climberMtr = new TalonFX(ClimberConstants.CLIMBER_MOTOR_PORT, TunerConstants.kCANBus);
 
-//         limitSw = new DigitalInput(9);
+        voltageCntrl = new VoltageOut(0.0);
+        climberMtrCfg = new TalonFXConfiguration();
+        motionMagicVoltage = new MotionMagicVoltage(0.0).withSlot(0);
 
-//         climbConfigLdr.Slot0.kP = kP;
-//         climbConfigLdr.Slot0.kI = kI;
-//         climbConfigLdr.Slot0.kD = kD;
-//         climbConfigLdr.Slot0.kG = kFF;
+        climberMtrCfg.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+        climberMtrCfg.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
-//         climbConfigLdr.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-//         climbConfigLdr.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
-        
-//         climbConfigLdr.CurrentLimits.SupplyCurrentLimitEnable = true;
-//         climbConfigLdr.CurrentLimits.StatorCurrentLimitEnable = true;
-//         climbConfigLdr.CurrentLimits.SupplyCurrentLimit = 30.0;
-//         climbConfigLdr.CurrentLimits.StatorCurrentLimit = 50.0;
+        climberMtrCfg.Feedback.SensorToMechanismRatio = 45/1;
 
-//         climbConfigLdr.MotionMagic.MotionMagicAcceleration = ClimberConstants.CLIMBER_ACCELERATION_CONSTRAINT;
-//         climbConfigLdr.MotionMagic.MotionMagicCruiseVelocity = ClimberConstants.CLIMBER_VELOCITY_CONSTRAINT;
+        climberMtrCfg.CurrentLimits.SupplyCurrentLimitEnable = true;
+        climberMtrCfg.CurrentLimits.StatorCurrentLimitEnable = true;
+        climberMtrCfg.CurrentLimits.SupplyCurrentLimit = 20.0;
+        climberMtrCfg.CurrentLimits.StatorCurrentLimit = 80.0;
 
-//         climbMtrLdr.getConfigurator().apply(climbConfigLdr);
-//         climbMtrFlw.getConfigurator().apply(climbConfigLdr); 
-//     }
+        climberMtrCfg.Slot0.kP = kP;
+        climberMtrCfg.Slot0.kI = kI;
+        climberMtrCfg.Slot0.kD = kD;
 
-//     public void setClimberHeight(double pos) {
-//         climbMtrLdr.setControl(motionMagicVoltage.withPosition(pos));
-//     }
+        climberMtrCfg.MotionMagic.MotionMagicAcceleration = IntakeSliderConstants.SLIDER_ACCELERATION_CONSTRAINT;
+        climberMtrCfg.MotionMagic.MotionMagicCruiseVelocity = IntakeSliderConstants.SLIDER_VELOCITY_CONSTRAINT;
 
-//     public FunctionalCommand ClimberHeightCmd(double height) {
-//         return new FunctionalCommand(() -> {},
-//             () -> setClimberHeight(height),
-//             interrupted -> {},
-//             () -> Math.abs(height - climbMtrLdr.getPosition().getValueAsDouble()) <= 0.5,
-//             this);
-//     }
-            
-//     public FunctionalCommand ClimberInitCmd() {
-//         return new FunctionalCommand(() -> climberInitialized = false,
-//                                      () -> {
-//                                         if(limitSw.get()){
-//                                             climbMtrLdr.set(-.125);
-//                                         } else if(!limitSw.get()) {
-//                                             climbMtrLdr.set(0);
-//                                             climbMtrLdr.setPosition(0);
-//                                             climberInitialized = true;
-//                                         }},
-//                                      interrupted -> climbMtrLdr.set(0),
-//                                      () -> climberInitialized,
-//                                      this);
-//     }
-// }
+        climberMtr.getConfigurator().apply(climberMtrCfg);
+    }
+
+    public void setRotateAngle() {
+        if (!out) {
+            out = true;
+            climberMtr.setControl(motionMagicVoltage.withPosition(distToRev(13.5)));
+        } else {
+            out = false;
+            climberMtr.setControl(motionMagicVoltage.withPosition(0));
+        }
+    }
+
+    public void setVoltage(double volt) {
+        climberMtr.setControl(voltageCntrl.withOutput(volt));
+    }
+
+    public double revToDist(double revolutions){
+        return revolutions * Math.PI * 1.5; 
+    }
+
+    public double distToRev(double distance){
+        return distance / (Math.PI * 1.5);
+    }
+
+  public Command runClimberUp(){
+    return Commands.runEnd(
+      () -> setVoltage(-1), 
+      () -> setVoltage(0), 
+      this);
+  }
+  public Command runClimberDown(){
+    return Commands.runEnd(
+      () -> setVoltage(1), 
+      () -> setVoltage(0), 
+      this);
+  }
+}

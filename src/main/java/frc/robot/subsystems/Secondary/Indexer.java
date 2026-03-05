@@ -62,7 +62,9 @@ public class Indexer extends SubsystemBase {
                 () -> (Math.abs(- indexMtr.getMotorVoltage().getValueAsDouble()) <= 5000),
                 this);
     }
-
+/**Returns a command that starts the indexer with 8 volts and stops the indexer when the command ends
+ * @return Command to stop and start the indexer
+ */
   public Command runIndexer(){
     return Commands.runEnd(
       () -> setVoltage(8), 

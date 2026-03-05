@@ -21,7 +21,7 @@ public class IndexerControl extends Command {
 
     @Override
     public void execute(){
-        if(drivetrain.distanceToHub < 70){
+        if(drivetrain.distanceToHub < ConstantValues.DISTANCE_TO_SHOOT){
         if(Math.abs(m_outtake.wheelSpeedMtr.getVelocity().getValueAsDouble() - ConstantValues.SHOOTER_RPS_NEAR) < 1 && m_autoAimer.atAngle && Math.abs(drivetrain.yaw - drivetrain.getState().Pose.getRotation().getRadians()) < 0.05){
             m_indexer.setVoltage(5);
 

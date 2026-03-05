@@ -27,14 +27,12 @@ public class OuttakeRun extends Command {
             m_intake.runIntake();
         } else if(m_intake.reverseIntakeOn) {
             m_intake.runReverseIntake();
-        } else if(m_intakeSlider.out) {
-             m_intake.runIntake();
         }
     }
 
     @Override
     public void execute(){
-        if(drivetrain.distanceToHub < 70){
+        if(drivetrain.distanceToHub < ConstantValues.DISTANCE_TO_SHOOT){
             m_outtake.setVelocity(ConstantValues.SHOOTER_RPS_NEAR);
         }else {
             m_outtake.setVelocity(ConstantValues.SHOOTER_RPS_FAR);
@@ -42,6 +40,9 @@ public class OuttakeRun extends Command {
     }
     @Override
     public void end(boolean interrupted){
+        if(m_intakeSlider.out) {
+             m_intake.runIntake();
+        }
         m_outtake.setVelocity(ConstantValues.OUTTAKE_IDLE_SPEED);
     }
 } 

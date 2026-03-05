@@ -16,7 +16,7 @@ public class OuttakeCmd extends Command {
     @Override
     public void initialize(){
     
-    m_outtake.setVelocity(10);
+    m_outtake.setVelocity(25);
     m_indexer.setVoltage(3);
     }
 

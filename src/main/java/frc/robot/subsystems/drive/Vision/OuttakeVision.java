@@ -68,8 +68,7 @@ import java.util.List;
          camera = new PhotonCamera(kOuttakeCameraName);
  
          photonEstimator =
-                 new PhotonPoseEstimator(kTagLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, kOuttakeRobotToCam);
-         photonEstimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
+                 new PhotonPoseEstimator(kTagLayout, kOuttakeRobotToCam);
  
          // ----- Simulation
          if (Robot.isSimulation()) {

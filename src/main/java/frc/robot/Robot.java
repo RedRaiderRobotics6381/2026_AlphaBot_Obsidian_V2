@@ -32,6 +32,10 @@ public class Robot extends TimedRobot {
   }
 
   @Override
+  public void robotInit() {
+
+  }
+  @Override
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();
 
@@ -41,6 +45,7 @@ public class Robot extends TimedRobot {
     radioVision.periodic();
 
   }
+
 
   // @Override
   // public void disabledInit() {
@@ -55,15 +60,15 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousInit() {
-    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+        m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
     if (m_autonomousCommand != null) {
       CommandScheduler.getInstance().schedule(m_autonomousCommand);
     }
   }
 
-  // @Override
-  // public void autonomousPeriodic() {}
+  @Override
+  public void autonomousPeriodic() {}
 
   // @Override
   // public void autonomousExit() {}

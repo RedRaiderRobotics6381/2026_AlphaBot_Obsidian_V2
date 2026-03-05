@@ -20,6 +20,7 @@ public class Constants {
 
   public static class IntakeConstants {
     public static final int INTAKE_MOTOR_PORT_1 = 36;
+    public static final int INTAKE_MOTOR_PORT_2 = 37;
   }
 
   public static class IntakeSliderConstants {
@@ -40,6 +41,13 @@ public class Constants {
     public static final int OUTTAKE_MOTOR_PORT = 29;
     public static final int OUTTAKE_ACCELERATION_CONSTRAINT = 9999;
   }
+
+  public static class ClimberConstants {
+    public static final int CLIMBER_MOTOR_PORT = 38; //TODO Change!!!
+    public static final int CLIMBER_VELOCITY_CONSTRAINT = 9999;
+    public static final int CLIMBER_ACCELERATION_CONSTRAINT = 9999;
+  }
+
     public static class Vision {
         public static final String kFrontCameraName = "Front";
         public static final String kBackCameraName = "Back";
@@ -80,11 +88,12 @@ public class Constants {
     
   }
   public static class ConstantValues {
+    public static double DISTANCE_TO_SHOOT = 80;
     public static double SHOOTER_RPS_NEAR = 25;
     public static double SHOOTER_SPEED_NEAR = 298;
-    public static double SHOOTER_RPS_FAR = 27;
+    public static double SHOOTER_RPS_FAR = 29;
     public static double SHOOTER_SPEED_FAR = 320;
-    public static double SHOOT_OVER_ANGLE = 70;
+    public static double SHOOT_OVER_ANGLE = 80;
     public static double SHOOT_OVER_SPEED = 30;
     public static double OUTTAKE_IDLE_SPEED = 10;
   }
