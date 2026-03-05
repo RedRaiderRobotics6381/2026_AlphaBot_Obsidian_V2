@@ -45,6 +45,10 @@ public Intake() {
     intMtrBck.getConfigurator().apply(intVelMtrLdrCfg);
 }
 
+/** Functional Command that returns another command that sets the voltage
+ * @param volt how many volts it's set to
+ * @return Functional Command
+ */
     public FunctionalCommand setVoltageCmd(double volt) {
         return new FunctionalCommand(
                 () -> {
@@ -57,11 +61,15 @@ public Intake() {
     }
 
     
-
+/** sets the indexer's voltage
+ * @param volt how many volts it's set to
+ */
 public void setVoltage(double volt) {
     intMtrFrnt.setControl(voltageCntrl.withOutput(Math.signum(volt) * (Math.abs(volt) + 3)));
 }
 
+/** runs the intake, when intake is off, it uses zero volts, and when intake is on, it uses 9 volts while the reverse intake turns off
+ */
 public void runIntake(){
     if(intakeOn){
         intakeOn = false;
@@ -72,6 +80,8 @@ public void runIntake(){
         setVoltage(9);
     }
 }
+/** runs the reverse intake, uses no volts whens the reverse intake is off, and uses 9 volts and runs in reverse when reverse intake is on and the intake is off 
+ */
 public void runReverseIntake(){
     if(reverseIntakeOn){
         reverseIntakeOn = false;

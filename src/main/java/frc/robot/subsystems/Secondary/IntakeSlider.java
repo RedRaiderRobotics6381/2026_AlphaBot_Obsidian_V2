@@ -69,6 +69,8 @@ public class IntakeSlider extends SubsystemBase {
         sliderEncoder.getConfigurator().apply(sliEncCfg);
     }
 
+   /** sets the rotate angle with it makeing the slider go out a distance of 13 when its true, When its false it makes the slider not go out at all.
+    */ 
     public void setRotateAngle() {
         if (!out) {
             out = true;
@@ -80,19 +82,32 @@ public class IntakeSlider extends SubsystemBase {
         
     }
 
+    /** sets the voltage of the slider 
+     * @param volt the volt amount its set to
+     */
     public void setVoltage(double volt) {
         sliderLdrMtr.setControl(voltageCntrl.withOutput(volt));
     }
 
+    /**the distance found using revolutions
+     * @param revolutions the amount of revolutions needed to get to a distance
+     * @return revToDist
+     */
     public double revToDist(double revolutions){
         return revolutions * Math.PI * 1.5; 
     }
 
+    /** convert distance to revolutions
+     * @param distance the distance needed to get a certain amount of revolution
+     * @return distToRev
+     */
     public double distToRev(double distance){
         return distance / (Math.PI * 1.5);
     }
 
-
+/** a command that makes the slider run using a single volt at times, when its not running its at 0
+ * @return Command runslider
+ */
   public Command runSlider(){
     return Commands.runEnd(
       () -> setVoltage(1), 
