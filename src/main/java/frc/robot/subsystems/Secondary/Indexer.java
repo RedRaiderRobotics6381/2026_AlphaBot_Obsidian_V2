@@ -67,7 +67,7 @@ public class Indexer extends SubsystemBase {
  */
   public Command runIndexer(){
     return Commands.runEnd(
-      () -> setVoltage(8), 
+      () -> setVoltage(10), 
       () -> setVoltage(0), 
       this);
   }

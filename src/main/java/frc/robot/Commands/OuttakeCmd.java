@@ -17,7 +17,7 @@ public class OuttakeCmd extends Command {
     public void initialize(){
     
     m_outtake.setVelocity(25);
-    m_indexer.setVoltage(3);
+    m_indexer.setVoltage(5);
     }
 
     @Override
@@ -25,7 +25,7 @@ public class OuttakeCmd extends Command {
         if(m_outtake.wheelSpeedMtr.getVelocity().getValueAsDouble() < 22.5){
             m_indexer.setVoltage(0);
         } else {
-            m_indexer.setVoltage(1);
+            m_indexer.setVoltage(8);
         }
     }
 

@@ -2,6 +2,7 @@ package frc.robot.subsystems.Secondary;
 
 import frc.robot.Constants.OuttakeConstants;
 import frc.robot.generated.TunerConstants;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
@@ -67,9 +68,9 @@ public class Outtake extends SubsystemBase {
     public void setVelocity(double speed){
         wheelSpeedMtr.setControl(motionMagicVelocityVoltage.withVelocity(speed));
     }
-    // @Override
-    // public void periodic() {
-    //     SmartDashboard.putBoolean("Outtake On", wheelSpeedMtr.getVelocity().getValueAsDouble() > 1);
-    //     SmartDashboard.putNumber("Cool Wheel Velocity", wheelSpeedMtr.getVelocity().getValueAsDouble());
-    // }
+    @Override
+    public void periodic() {
+        // SmartDashboard.putBoolean("Outtake On", wheelSpeedMtr.getVelocity().getValueAsDouble() > 1);
+        SmartDashboard.putNumber("Cool Wheel Velocity", wheelSpeedMtr.getVelocity().getValueAsDouble());
+    }
 }

@@ -22,5 +22,6 @@ public class AutoAutoShooter extends Command {
     @Override
     public void end(boolean interrupted){
         CommandScheduler.getInstance().cancel(m_outtakeRun, m_autoAimer, m_indexerControl);
+        System.out.println("Hello");
     }
 }

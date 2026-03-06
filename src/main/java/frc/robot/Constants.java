@@ -88,10 +88,10 @@ public class Constants {
     
   }
   public static class ConstantValues {
-    public static double DISTANCE_TO_SHOOT = 80;
+    public static double DISTANCE_TO_SHOOT = 85;
     public static double SHOOTER_RPS_NEAR = 25;
     public static double SHOOTER_SPEED_NEAR = 298;
-    public static double SHOOTER_RPS_FAR = 29;
+    public static double SHOOTER_RPS_FAR = 30;
     public static double SHOOTER_SPEED_FAR = 320;
     public static double SHOOT_OVER_ANGLE = 80;
     public static double SHOOT_OVER_SPEED = 30;

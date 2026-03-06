@@ -291,6 +291,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             distanceToHub =  Math.sqrt(Math.pow(xDistanceToHub - getState().Pose.getX(), 2) + Math.pow(4.3 - getState().Pose.getY(), 2)) * 100 / 2.54;
             yaw = Math.atan((4.3 - getState().Pose.getY())// + shooterPos * ((15.945 * Math.sin(getState().Pose.getRotation().getRadians() + 0.7188) * 2.54) / 100)))
             /(xDistanceToHub - getState().Pose.getX()));// + shooterPos * ((15.945 * Math.cos(getState().Pose.getRotation().getRadians() + 0.7188) * 2.54) / 100)))); // was 4.0259
+            SmartDashboard.putBoolean("isAligned", Math.abs(yaw - getState().Pose.getRotation().getRadians()) < 0.1);
+            SmartDashboard.putNumber("distance", distanceToHub);
     }
 
     private void startSimThread() {

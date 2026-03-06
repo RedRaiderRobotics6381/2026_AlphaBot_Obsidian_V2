@@ -3,41 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.5731777777777776,
-        "y": 5.0874
+        "x": 2.2381888888888892,
+        "y": 7.231177777777777
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.3551222222222217,
-        "y": 5.097144444444443
+        "x": 1.3611888888888894,
+        "y": 6.841399999999998
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Almost Shoot"
     },
     {
       "anchor": {
-        "x": 0.6011222222222228,
-        "y": 7.075266666666667
+        "x": 1.770455555555556,
+        "y": 6.246988888888889
       },
       "prevControl": {
-        "x": 1.1760444444444444,
-        "y": 7.17271111111111
-      },
-      "nextControl": {
-        "x": -0.1887926361707689,
-        "y": 6.941382792362771
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
-        "x": 3.5731777777777776,
-        "y": 3.9180666666666664
-      },
-      "prevControl": {
-        "x": 2.8228555555555555,
-        "y": 3.898577777777777
+        "x": 1.7899444444444446,
+        "y": 6.685488888888889
       },
       "nextControl": null,
       "isLocked": false,
@@ -58,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 1.1934894239819127
+    "rotation": -1.2275788321345429
   },
   "reversed": false,
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -178.9291755452131
+    "rotation": -90.9710219310792
   },
   "useDefaultConstraints": true
 }

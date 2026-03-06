@@ -1,5 +1,6 @@
 package frc.robot.Commands;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.*;
 import frc.robot.subsystems.Secondary.Rotation;
@@ -65,6 +66,7 @@ public class AutoAimer extends Command {
         } else {
             atAngle = false;
         }
+        SmartDashboard.putNumber("Attempted Angle", angle);
     }
 
     @Override

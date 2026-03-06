@@ -4,7 +4,18 @@
 
 package frc.robot;
 
+import java.lang.reflect.Field;
+
+import com.ctre.phoenix6.SignalLogger;
+
+import edu.wpi.first.math.MathShared;
+import edu.wpi.first.math.MathSharedStore;
+import edu.wpi.first.math.MathUsageId;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.IterativeRobotBase;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.Watchdog;
+import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.drive.Vision.BackVision;
@@ -33,7 +44,40 @@ public class Robot extends TimedRobot {
 
   @Override
   public void robotInit() {
+  SignalLogger.enableAutoLogging(false);
+    LiveWindow.disableAllTelemetry();
+     try {
+      Field watchdogField = IterativeRobotBase.class.getDeclaredField("m_watchdog");
+      watchdogField.setAccessible(true);
+      Watchdog watchdog = (Watchdog) watchdogField.get(this);
+      watchdog.setTimeout(1);
+    } catch (Exception e) {
+      DriverStation.reportWarning("Failed to disable loop overrun warnings.", false);
+    }
+    CommandScheduler.getInstance().setPeriod(1);
 
+    // Silence Rotation2d warnings
+    var mathShared = MathSharedStore.getMathShared();
+    MathSharedStore.setMathShared(
+        new MathShared() {
+          @Override
+          public void reportError(String error, StackTraceElement[] stackTrace) {
+            if (error.startsWith("x and y components of Rotation2d are zero")) {
+              return;
+            }
+            mathShared.reportError(error, stackTrace);
+          }
+
+          @Override
+          public void reportUsage(MathUsageId id, int count) {
+            mathShared.reportUsage(id, count);
+          }
+
+          @Override
+          public double getTimestamp() {
+            return mathShared.getTimestamp();
+          }
+        });
   }
   @Override
   public void robotPeriodic() {
@@ -43,6 +87,10 @@ public class Robot extends TimedRobot {
     backVision.periodic();
     outtakeVision.periodic();
     radioVision.periodic();
+
+    if(!m_robotContainer.m_intakeSlider.out && m_robotContainer.m_intake.intakeOn){
+      m_robotContainer.m_intake.runIntake();
+    }
 
   }
 

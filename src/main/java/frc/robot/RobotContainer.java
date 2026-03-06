@@ -6,6 +6,7 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.*;
 
+import javax.print.attribute.standard.MediaSize.NA;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
@@ -83,9 +84,16 @@ public class RobotContainer {
     private final DriveToYaw m_driveToYaw = new DriveToYaw(drivetrain, driveToAngle, joystick, MaxSpeed);
     private final ShootOver m_shootOver = new ShootOver(m_outtake, m_rotation, m_indexer);
     private final AutoShooter m_autoShooter = new AutoShooter(m_outtakeRun, m_autoAimer, m_indexerControl, m_driveToYaw);
+    private final AutoAutoShooter m_autoAutoShooter = new AutoAutoShooter(m_outtakeRun, m_autoAimer, m_indexerControl);
 
     public RobotContainer() {
-        NamedCommands.registerCommand("OuttakeCmd", m_outtakeCmd);
+        NamedCommands.registerCommand("Outtake", m_outtakeRun);
+        NamedCommands.registerCommand("Aim", m_autoAimer);
+        NamedCommands.registerCommand("Index", m_indexerControl);
+        NamedCommands.registerCommand("Yaw", m_driveToYaw);
+        NamedCommands.registerCommand("Intake", m_intakeRun);
+        NamedCommands.registerCommand("Intake Stay Out", Commands.runOnce(() -> m_intake.runIntake()));
+        NamedCommands.registerCommand("AutoShooter", m_autoShooter);
         autoChooser2 = new AutoPicker();
         autoChooser = AutoBuilder.buildAutoChooser();
         for(int i = 0; i < autoChooser2.getAutoList().length; i++){

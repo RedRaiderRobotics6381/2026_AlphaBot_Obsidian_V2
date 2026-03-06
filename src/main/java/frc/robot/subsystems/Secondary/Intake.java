@@ -37,8 +37,8 @@ public Intake() {
 
     intVelMtrLdrCfg.CurrentLimits.SupplyCurrentLimitEnable = false;
     intVelMtrLdrCfg.CurrentLimits.StatorCurrentLimitEnable = false;
-    intVelMtrLdrCfg.CurrentLimits.SupplyCurrentLimit = 80.0;
-    intVelMtrLdrCfg.CurrentLimits.StatorCurrentLimit = 120.0;
+    intVelMtrLdrCfg.CurrentLimits.SupplyCurrentLimit = 120.0;
+    intVelMtrLdrCfg.CurrentLimits.StatorCurrentLimit = 160.0;
 
 
     intMtrFrnt.getConfigurator().apply(intVelMtrLdrCfg);
@@ -77,7 +77,7 @@ public void runIntake(){
     } else {
         intakeOn = true;
         reverseIntakeOn = false;
-        setVoltage(9);
+        setVoltage(3);
     }
 }
 /** runs the reverse intake, uses no volts whens the reverse intake is off, and uses 9 volts and runs in reverse when reverse intake is on and the intake is off 

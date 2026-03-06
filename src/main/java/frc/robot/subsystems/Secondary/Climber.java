@@ -82,13 +82,13 @@ public class Climber extends SubsystemBase {
 
   public Command runClimberUp(){
     return Commands.runEnd(
-      () -> setVoltage(-1), 
+      () -> setVoltage(-4), 
       () -> setVoltage(0), 
       this);
   }
   public Command runClimberDown(){
     return Commands.runEnd(
-      () -> setVoltage(1), 
+      () -> setVoltage(4), 
       () -> setVoltage(0), 
       this);
   }
