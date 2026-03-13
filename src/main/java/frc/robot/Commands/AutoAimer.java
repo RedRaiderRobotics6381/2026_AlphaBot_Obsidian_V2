@@ -66,7 +66,7 @@ public class AutoAimer extends Command {
         } else {
             atAngle = false;
         }
-        SmartDashboard.putNumber("Attempted Angle", angle);
+        SmartDashboard.putBoolean("atAngle", atAngle);
     }
 
     @Override

@@ -6,8 +6,6 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.*;
 
-import javax.print.attribute.standard.MediaSize.NA;
-
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
@@ -58,7 +56,7 @@ public class RobotContainer {
     private final SwerveRequest.RobotCentric forwardStraight = new SwerveRequest.RobotCentric()
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
 
-    // private final Telemetry logger = new Telemetry(MaxSpeed);
+    private final Telemetry logger = new Telemetry(MaxSpeed);
 
     private final CommandXboxController joystick = new CommandXboxController(0);
     private final XboxController joystick_HID = joystick.getHID();
@@ -80,11 +78,13 @@ public class RobotContainer {
     private final IntakeRun m_intakeRun = new IntakeRun(m_intake, m_intakeSlider);
     private final AutoAimer m_autoAimer = new AutoAimer(m_rotation, drivetrain);
     private final IndexerControl m_indexerControl = new IndexerControl(m_outtake, m_indexer, drivetrain, m_autoAimer);
+    private final StupidIndexer m_stupidIndexer = new StupidIndexer(m_outtake, m_indexer);
     private final OuttakeCmd m_outtakeCmd = new OuttakeCmd(m_outtake, m_indexer);
     private final DriveToYaw m_driveToYaw = new DriveToYaw(drivetrain, driveToAngle, joystick, MaxSpeed);
     private final ShootOver m_shootOver = new ShootOver(m_outtake, m_rotation, m_indexer);
     private final AutoShooter m_autoShooter = new AutoShooter(m_outtakeRun, m_autoAimer, m_indexerControl, m_driveToYaw);
     private final AutoAutoShooter m_autoAutoShooter = new AutoAutoShooter(m_outtakeRun, m_autoAimer, m_indexerControl);
+    private final StupidShooter m_stupidShooter = new StupidShooter(m_outtakeRun, m_stupidIndexer);
 
     public RobotContainer() {
         NamedCommands.registerCommand("Outtake", m_outtakeRun);
@@ -127,21 +127,24 @@ public class RobotContainer {
                     .withVelocityY(-joystick_HID.getLeftX() * MaxSpeed * 0.15) // Drive left with negative X (left)
                     .withRotationalRate(-joystick_HID.getRightX() * MaxAngularRate * 0.5) // Drive counterclockwise with negative X (left)
         ));
-        joystick.rightBumper().onTrue(Commands.runOnce(() -> m_intake.runIntake()));
+        joystick.a().onTrue(Commands.runOnce(() -> m_intake.runIntake()));
         // joystick.x().whileTrue(m_indexer.runIndexer());
         joystick.x().whileTrue(m_shootOver);
-        joystick.a().onTrue(m_outtakeRun);
+        joystick.rightBumper().whileTrue(m_autoAutoShooter);
         joystick.b().onTrue(Commands.runOnce(() -> m_intake.runReverseIntake()));
         joystick.y().whileTrue(m_autoShooter);
         joystick.leftBumper().onTrue(m_intakeRun);
         joystick.povUp().whileTrue(m_climber.runClimberUp());
         joystick.povDown().whileTrue(m_climber.runClimberDown());
+        joystick.povLeft().whileTrue(m_stupidShooter);
 
         // engineer.button(1).whileTrue(m_autoShooter);
         // engineer.button(2).onTrue(m_intakeRun);
 
         // engineer.button(4).whileTrue(m_shootOver);
         // engineer.button(5).onTrue(Commands.runOnce(() -> m_intake.runReverseIntake()));
+        engineer.button(3).whileTrue(m_climber.runClimberUp());
+        engineer.button(6).whileTrue(m_climber.runClimberDown());
 
         // Idle while the robot is disabled. This ensures the configured
         // neutral mode is applied to the drive motors while disabled.
@@ -155,24 +158,10 @@ public class RobotContainer {
         //     point.withModuleDirection(new Rotation2d(-joystick.getLeftY(), -joystick.getLeftX()))
         // ));
 
-  //      engineer.().whileTrue(driveToYaw);
-      //  engineer.button(1).whileTrue(m_intake.reverseIntake());
-       // engineer.button(2).onTrue(Commands.runOnce(() -> m_intake.setVoltage(3)));
-       // engineer.button(5).onTrue(m_autoShooter);
-       // engineer.button(6).onTrue(m_climber.ClimberHeightCmd(0));//TODO change value
-       // engineer.button(10).onTrue(m_climber.ClimberHeightCmd(0)); // TODO change value
-
-        // joystick.pov(0).whileTrue(drivetrain.applyRequest(() ->
-        //     forwardStraight.withVelocityX(0.5).withVelocityY(0))
-        // );
-        // joystick.pov(180).whileTrue(drivetrain.applyRequest(() ->
-        //     forwardStraight.withVelocityX(-0.5).withVelocityY(0))
-        // );
-
         // reset the field-centric heading on start press
         joystick.start().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
-        // drivetrain.registerTelemetry(logger::telemeterize);
+        drivetrain.registerTelemetry(logger::telemeterize);
 
     }
 

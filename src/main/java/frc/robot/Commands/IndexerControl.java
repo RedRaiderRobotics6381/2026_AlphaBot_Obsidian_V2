@@ -11,6 +11,7 @@ public class IndexerControl extends Command {
     private Outtake m_outtake;
     private CommandSwerveDrivetrain drivetrain;
     private AutoAimer m_autoAimer;
+    public boolean override;
 
     public IndexerControl(Outtake m_outtake, Indexer m_indexer, CommandSwerveDrivetrain drivetrain, AutoAimer m_autoAimer) {
         this.m_indexer = m_indexer;
@@ -21,21 +22,35 @@ public class IndexerControl extends Command {
 
     @Override
     public void execute(){
-        if(drivetrain.distanceToHub < ConstantValues.DISTANCE_TO_SHOOT){
-        if(Math.abs(m_outtake.wheelSpeedMtr.getVelocity().getValueAsDouble() - ConstantValues.SHOOTER_RPS_NEAR) < 1 && m_autoAimer.atAngle && Math.abs(drivetrain.yaw - drivetrain.getState().Pose.getRotation().getRadians()) < 0.1){
-            m_indexer.setVoltage(5);
-
+        if(!override){
+            if(drivetrain.distanceToHub < ConstantValues.DISTANCE_TO_SHOOT){
+                if(Math.abs(m_outtake.wheelSpeedMtr.getVelocity().getValueAsDouble() - ConstantValues.SHOOTER_RPS_NEAR) < 1 && m_autoAimer.atAngle && drivetrain.isAligned){
+                    m_indexer.setVoltage(5);
+                } else {
+                    m_indexer.setVoltage(0);
+                }
+            } else {
+                if(Math.abs(m_outtake.wheelSpeedMtr.getVelocity().getValueAsDouble() - ConstantValues.SHOOTER_RPS_FAR) < 1 && m_autoAimer.atAngle && drivetrain.isAligned){
+                    m_indexer.setVoltage(5);
+                } else {
+                    m_indexer.setVoltage(0);
+                }
+            }
         } else {
-            m_indexer.setVoltage(0);
+            if(drivetrain.distanceToHub < ConstantValues.DISTANCE_TO_SHOOT){
+                if(Math.abs(m_outtake.wheelSpeedMtr.getVelocity().getValueAsDouble() - ConstantValues.SHOOTER_RPS_NEAR) < 1 && m_autoAimer.atAngle){
+                    m_indexer.setVoltage(5);
+                } else {
+                    m_indexer.setVoltage(0);
+                }
+            } else {
+                if(Math.abs(m_outtake.wheelSpeedMtr.getVelocity().getValueAsDouble() - ConstantValues.SHOOTER_RPS_FAR) < 1 && m_autoAimer.atAngle){
+                    m_indexer.setVoltage(5);
+                } else {
+                    m_indexer.setVoltage(0);
+                }
+            }
         }
-    } else {
-        if(Math.abs(m_outtake.wheelSpeedMtr.getVelocity().getValueAsDouble() - ConstantValues.SHOOTER_RPS_FAR) < 1 && m_autoAimer.atAngle && Math.abs(drivetrain.yaw - drivetrain.getState().Pose.getRotation().getRadians()) < 0.1){
-            m_indexer.setVoltage(5);
-
-        } else {
-            m_indexer.setVoltage(0);
-        }
-    }
     }
 
     @Override

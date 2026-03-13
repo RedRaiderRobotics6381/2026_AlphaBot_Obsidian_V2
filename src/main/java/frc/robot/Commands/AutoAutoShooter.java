@@ -15,13 +15,14 @@ public class AutoAutoShooter extends Command {
     }
 
     @Override
-    public void initialize(){   
+    public void initialize(){
+        m_indexerControl.override = true;   
         CommandScheduler.getInstance().schedule(m_outtakeRun, m_autoAimer, m_indexerControl);
     }
-
+    
     @Override
     public void end(boolean interrupted){
         CommandScheduler.getInstance().cancel(m_outtakeRun, m_autoAimer, m_indexerControl);
-        System.out.println("Hello");
+        m_indexerControl.override = false;
     }
 }

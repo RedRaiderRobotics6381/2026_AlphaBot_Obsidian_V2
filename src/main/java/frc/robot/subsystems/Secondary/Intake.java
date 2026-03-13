@@ -9,6 +9,7 @@ import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.signals.MotorArrangementValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.IntakeConstants;
@@ -85,11 +86,16 @@ public void runIntake(){
 public void runReverseIntake(){
     if(reverseIntakeOn){
         reverseIntakeOn = false;
-        setVoltage(0);
+        setVoltage(0); 
     } else {
         reverseIntakeOn = true;
         intakeOn = false;
         setVoltage(-9);
     }
+}
+@Override
+public void periodic(){
+    SmartDashboard.putBoolean("Telling Intake?", intakeOn);
+    SmartDashboard.getBoolean("Intake On?", intMtrFrnt.getMotorVoltage().getValueAsDouble() > 1);
 }
 }

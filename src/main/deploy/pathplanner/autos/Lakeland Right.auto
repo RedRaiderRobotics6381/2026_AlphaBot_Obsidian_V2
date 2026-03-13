@@ -81,6 +81,43 @@
                 "data": {
                   "name": "Index"
                 }
+              },
+              {
+                "type": "parallel",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Outtake"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Yaw"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Aim"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Index"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Intake"
+                      }
+                    }
+                  ]
+                }
               }
             ]
           }

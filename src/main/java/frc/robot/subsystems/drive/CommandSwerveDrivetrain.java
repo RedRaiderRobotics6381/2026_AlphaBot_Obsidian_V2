@@ -43,8 +43,9 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     private double m_lastSimTime;
     public double distanceToHub;
     public double yaw;
-    private double xDistanceToHub;
-    private int shooterPos;
+    public double xDistanceToHub;
+    public double rotOffset;
+    public boolean isAligned;
 
     /* Blue alliance sees forward as 0 degrees (toward red alliance wall) */
     private static final Rotation2d kBlueAlliancePerspectiveRotation = Rotation2d.kZero;
@@ -141,13 +142,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         if (Utils.isSimulation()) {
             startSimThread();
         }
-        if(DriverStation.getAlliance().get() == Alliance.Red){
-            xDistanceToHub = 12.2; // was 11.9
-            shooterPos = 1;
-        } else {
-            xDistanceToHub = 4.925; // was 4.625
-            shooterPos = -1;
-        }
+        
         configureAutoBuilder();
     }
 
@@ -291,7 +286,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             distanceToHub =  Math.sqrt(Math.pow(xDistanceToHub - getState().Pose.getX(), 2) + Math.pow(4.3 - getState().Pose.getY(), 2)) * 100 / 2.54;
             yaw = Math.atan((4.3 - getState().Pose.getY())// + shooterPos * ((15.945 * Math.sin(getState().Pose.getRotation().getRadians() + 0.7188) * 2.54) / 100)))
             /(xDistanceToHub - getState().Pose.getX()));// + shooterPos * ((15.945 * Math.cos(getState().Pose.getRotation().getRadians() + 0.7188) * 2.54) / 100)))); // was 4.0259
-            SmartDashboard.putBoolean("isAligned", Math.abs(yaw - getState().Pose.getRotation().getRadians()) < 0.1);
+            isAligned = (getState().Pose.getRotation().getRadians() > 0) ? Math.abs(yaw - (getState().Pose.getRotation().getRadians() - rotOffset)) < 0.1 : Math.abs(yaw - (getState().Pose.getRotation().getRadians() + rotOffset)) < 0.1;
+            SmartDashboard.putBoolean("isAligned", isAligned);
             SmartDashboard.putNumber("distance", distanceToHub);
     }
 

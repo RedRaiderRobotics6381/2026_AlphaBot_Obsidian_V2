@@ -65,7 +65,7 @@ public class Constants {
 
         // The layout of the AprilTags on the field
         public static final AprilTagFieldLayout kTagLayout =
-                AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
+                AprilTagFieldLayout.loadField(AprilTagFields.k2026RebuiltAndymark);
 
         // The standard deviations of our vision estimated poses, which affect correction rate
         // (Fake values. Experiment and determine estimation noise on an actual robot.)
@@ -82,11 +82,10 @@ public class Constants {
   
   }
 
-
   public static class PhysicalConstants {
     public static double SHOOTER_HEIGHT = 24;
-    
   }
+
   public static class ConstantValues {
     public static double DISTANCE_TO_SHOOT = 85;
     public static double SHOOTER_RPS_NEAR = 25;
@@ -97,6 +96,7 @@ public class Constants {
     public static double SHOOT_OVER_SPEED = 30;
     public static double OUTTAKE_IDLE_SPEED = 10;
   }
+
   public static class FieldConstants {
     public static double SMALLEST_RADIUS_OF_HUB = 25.5; //inches
     public static double HEIGHT_OF_HUB = 72; //inches

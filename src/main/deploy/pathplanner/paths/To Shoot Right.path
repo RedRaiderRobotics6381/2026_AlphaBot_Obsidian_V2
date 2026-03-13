@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.656105422310312,
-        "y": 1.0028888114488694
+        "x": 7.675588888888889,
+        "y": 0.7803555555555547
       },
       "isLocked": false,
       "linkedName": "In Balls Right"
@@ -20,8 +20,8 @@
         "y": 0.769
       },
       "prevControl": {
-        "x": 7.392998307459928,
-        "y": 0.4571497992345056
+        "x": 7.54891111111111,
+        "y": -0.2623000000000003
       },
       "nextControl": null,
       "isLocked": false,

@@ -12,16 +12,14 @@ import edu.wpi.first.math.MathShared;
 import edu.wpi.first.math.MathSharedStore;
 import edu.wpi.first.math.MathUsageId;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.IterativeRobotBase;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Watchdog;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.subsystems.drive.Vision.BackVision;
 import frc.robot.subsystems.drive.Vision.FrontVision;
-import frc.robot.subsystems.drive.Vision.OuttakeVision;
-import frc.robot.subsystems.drive.Vision.RadioVision;
 
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
@@ -29,16 +27,16 @@ public class Robot extends TimedRobot {
   private final RobotContainer m_robotContainer;
 
   private FrontVision frontVision;
-  private BackVision backVision;
-  private OuttakeVision outtakeVision;
-  private RadioVision radioVision;
+  // private BackVision backVision;
+  // private OuttakeVision outtakeVision;
+  // private RadioVision radioVision;
 
   public Robot() {
     m_robotContainer = new RobotContainer();
     frontVision = new FrontVision(m_robotContainer.drivetrain::addVisionMeasurement);
-    backVision = new BackVision(m_robotContainer.drivetrain::addVisionMeasurement);
-    outtakeVision = new OuttakeVision(m_robotContainer.drivetrain::addVisionMeasurement);
-    radioVision = new RadioVision(m_robotContainer.drivetrain::addVisionMeasurement);
+    // backVision = new BackVision(m_robotContainer.drivetrain::addVisionMeasurement);
+    // outtakeVision = new OuttakeVision(m_robotContainer.drivetrain::addVisionMeasurement);
+    // radioVision = new RadioVision(m_robotContainer.drivetrain::addVisionMeasurement);
 
   }
 
@@ -84,9 +82,9 @@ public class Robot extends TimedRobot {
     CommandScheduler.getInstance().run();
 
     frontVision.periodic();
-    backVision.periodic();
-    outtakeVision.periodic();
-    radioVision.periodic();
+    // backVision.periodic();
+    // outtakeVision.periodic();
+    // radioVision.periodic();
 
     if(!m_robotContainer.m_intakeSlider.out && m_robotContainer.m_intake.intakeOn){
       m_robotContainer.m_intake.runIntake();
@@ -113,6 +111,17 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       CommandScheduler.getInstance().schedule(m_autonomousCommand);
     }
+    m_robotContainer.m_rotation.rotationMtr.setPosition(0);
+    m_robotContainer.m_intakeSlider.sliderEncoder.setPosition(0);
+    if(DriverStation.getAlliance().get() == Alliance.Red){
+            m_robotContainer.drivetrain.xDistanceToHub = 11.9; // was 11.9
+            m_robotContainer.drivetrain.rotOffset = Math.PI;
+            System.out.println("Bello");
+        } else {
+            m_robotContainer.drivetrain.xDistanceToHub = 4.925; // was 4.625
+            m_robotContainer.drivetrain.rotOffset = 0;
+            System.out.println("hello");
+        }
   }
 
   @Override
@@ -126,8 +135,17 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
-    m_robotContainer.m_rotation.rotationMtr.setPosition(0);
-    m_robotContainer.m_intakeSlider.sliderEncoder.setPosition(0);
+    // m_robotContainer.m_rotation.rotationMtr.setPosition(0);
+    // m_robotContainer.m_intakeSlider.sliderEncoder.setPosition(0);
+    if(DriverStation.getAlliance().get() == Alliance.Red){
+            m_robotContainer.drivetrain.xDistanceToHub = 11.9; // was 11.9
+            m_robotContainer.drivetrain.rotOffset = Math.PI;
+            System.out.println("Bello");
+        } else {
+            m_robotContainer.drivetrain.xDistanceToHub = 4.925; // was 4.625
+            m_robotContainer.drivetrain.rotOffset = 0;
+            System.out.println("hello");
+        }
   }
 
   // @Override
