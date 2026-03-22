@@ -23,7 +23,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import frc.robot.Commands.*;
 import frc.robot.generated.TunerConstants;
-import frc.robot.subsystems.Secondary.Climber;
+// import frc.robot.subsystems.Secondary.Climber;
 import frc.robot.subsystems.Secondary.Indexer;
 import frc.robot.subsystems.Secondary.Intake;
 import frc.robot.subsystems.Secondary.IntakeSlider;
@@ -38,7 +38,7 @@ public class RobotContainer {
     public final Indexer m_indexer = new Indexer();
     public final Outtake m_outtake = new Outtake();
     public final IntakeSlider m_intakeSlider = new IntakeSlider();
-    public final Climber m_climber = new Climber();
+    // public final Climber m_climber = new Climber();
     
     public final Rotation m_rotation = new Rotation();
     private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
@@ -74,26 +74,21 @@ public class RobotContainer {
 
     // private final Turret m_turret = new Turret();
     // private final Climber m_climber = new Climber();
-    private final OuttakeRun m_outtakeRun = new OuttakeRun(m_outtake, m_intake, m_intakeSlider, drivetrain);
-    private final IntakeRun m_intakeRun = new IntakeRun(m_intake, m_intakeSlider);
-    private final AutoAimer m_autoAimer = new AutoAimer(m_rotation, drivetrain);
-    private final IndexerControl m_indexerControl = new IndexerControl(m_outtake, m_indexer, drivetrain, m_autoAimer);
-    private final StupidIndexer m_stupidIndexer = new StupidIndexer(m_outtake, m_indexer);
-    private final OuttakeCmd m_outtakeCmd = new OuttakeCmd(m_outtake, m_indexer);
-    private final DriveToYaw m_driveToYaw = new DriveToYaw(drivetrain, driveToAngle, joystick, MaxSpeed);
-    private final ShootOver m_shootOver = new ShootOver(m_outtake, m_rotation, m_indexer);
-    private final AutoShooter m_autoShooter = new AutoShooter(m_outtakeRun, m_autoAimer, m_indexerControl, m_driveToYaw);
-    private final AutoAutoShooter m_autoAutoShooter = new AutoAutoShooter(m_outtakeRun, m_autoAimer, m_indexerControl);
-    private final StupidShooter m_stupidShooter = new StupidShooter(m_outtakeRun, m_stupidIndexer);
 
     public RobotContainer() {
-        NamedCommands.registerCommand("Outtake", m_outtakeRun);
-        NamedCommands.registerCommand("Aim", m_autoAimer);
-        NamedCommands.registerCommand("Index", m_indexerControl);
-        NamedCommands.registerCommand("Yaw", m_driveToYaw);
-        NamedCommands.registerCommand("Intake", m_intakeRun);
+        NamedCommands.registerCommand("Outtake", new OuttakeRun(m_outtake, m_intake, m_intakeSlider));
+        NamedCommands.registerCommand("Aim", new AutoAimer(m_rotation));
+        NamedCommands.registerCommand("Index", new IndexerControl(m_indexer));
+        NamedCommands.registerCommand("Yaw", new DriveToYaw(drivetrain, driveToAngle, joystick, MaxSpeed));
+        NamedCommands.registerCommand("Intake", new IntakeRun(m_intake, m_intakeSlider));
         NamedCommands.registerCommand("Intake Stay Out", Commands.runOnce(() -> m_intake.runIntake()));
-        NamedCommands.registerCommand("AutoShooter", m_autoShooter);
+        NamedCommands.registerCommand("AutoShooter", 
+            Commands.parallel(
+                    new OuttakeRun(m_outtake, m_intake, m_intakeSlider),
+                    new IndexerControl(m_indexer),
+                    new AutoAimer(m_rotation),
+                    new DriveToYaw(drivetrain, driveToAngle, joystick, MaxSpeed)
+            ));
         autoChooser2 = new AutoPicker();
         autoChooser = AutoBuilder.buildAutoChooser();
         for(int i = 0; i < autoChooser2.getAutoList().length; i++){
@@ -110,41 +105,64 @@ public class RobotContainer {
         // Note that X is defined as forward according to WPILib convention,
         // and Y is defined as to the left according to WPILib convention.
         drivetrain.setDefaultCommand(
-            // Drivetrain will execute this command periodically
             drivetrain.applyRequest(() ->
                 drive.withVelocityX(-joystick_HID.getLeftY() * MaxSpeed * 0.75) // Drive forward with negative Y (forward)
                     .withVelocityY(-joystick_HID.getLeftX() * MaxSpeed * 0.75) // Drive left with negative X (left)
                     .withRotationalRate(-joystick_HID.getRightX() * MaxAngularRate * 0.75) // Drive counterclockwise with negative X (left)
             )
         );
+
         joystick.leftTrigger().whileTrue(drivetrain.applyRequest(() ->
                 drive.withVelocityX(-joystick_HID.getLeftY() * MaxSpeed * 1.5) // Drive forward with negative Y (forward)
                     .withVelocityY(-joystick_HID.getLeftX() * MaxSpeed * 1.5) // Drive left with negative X (left)
                     .withRotationalRate(-joystick_HID.getRightX() * MaxAngularRate * 1.5) // Drive counterclockwise with negative X (left)
         ));
+
         joystick.rightTrigger().whileTrue(drivetrain.applyRequest(() ->
                 drive.withVelocityX(-joystick_HID.getLeftY() * MaxSpeed * 0.15) // Drive forward with negative Y (forward)
                     .withVelocityY(-joystick_HID.getLeftX() * MaxSpeed * 0.15) // Drive left with negative X (left)
                     .withRotationalRate(-joystick_HID.getRightX() * MaxAngularRate * 0.5) // Drive counterclockwise with negative X (left)
         ));
-        joystick.a().onTrue(Commands.runOnce(() -> m_intake.runIntake()));
-        // joystick.x().whileTrue(m_indexer.runIndexer());
-        joystick.x().whileTrue(m_shootOver);
-        joystick.rightBumper().whileTrue(m_autoAutoShooter);
-        joystick.b().onTrue(Commands.runOnce(() -> m_intake.runReverseIntake()));
-        joystick.y().whileTrue(m_autoShooter);
-        joystick.leftBumper().onTrue(m_intakeRun);
-        joystick.povUp().whileTrue(m_climber.runClimberUp());
-        joystick.povDown().whileTrue(m_climber.runClimberDown());
-        joystick.povLeft().whileTrue(m_stupidShooter);
+
+        joystick.y().whileTrue(new ShootOver(m_outtake, m_rotation, m_indexer));
+        //Auto Shooter
+        joystick.rightBumper().whileTrue(
+            Commands.parallel(
+                    new OuttakeRun(m_outtake, m_intake, m_intakeSlider),
+                    new IndexerControl(m_indexer),
+                    new AutoAimer(m_rotation),
+                    new DriveToYaw(drivetrain, driveToAngle, joystick, MaxSpeed)
+            )
+        );
+        //Auto Shooter no yaw
+        // joystick.rightBumper()
+        //     .whileTrue(
+        //         Commands.parallel(
+        //             Commands.runOnce(() -> IndexerControl.override = true),
+        //             new OuttakeRun(m_outtake, m_intake, m_intakeSlider),
+        //             new IndexerControl(m_indexer),
+        //             new AutoAimer(m_rotation)
+        // ));
+        //Auto Shooter no yaw no pitch
+        // joystick.povLeft().whileTrue(
+        //     Commands.parallel(
+        //             new OuttakeRun(m_outtake, m_intake, m_intakeSlider),
+        //             new StupidIndexer(m_indexer)
+        //     )
+        // );
+        joystick.leftBumper().onTrue(m_intake.runOnce(() -> m_intake.runIntake()));
+        joystick.x().onTrue(m_intake.runOnce(() -> m_intake.runReverseIntake()));
+        // joystick.povUp().whileTrue(m_climber.runClimberUp());
+        // joystick.povDown().whileTrue(m_climber.runClimberDown());
+        joystick.a().onTrue(Commands.runOnce(() -> m_intakeSlider.setRotateAngle())); //TODO JUST FOR TESTING!!! Remove for comp
 
         // engineer.button(1).whileTrue(m_autoShooter);
         // engineer.button(2).onTrue(m_intakeRun);
 
         // engineer.button(4).whileTrue(m_shootOver);
         // engineer.button(5).onTrue(Commands.runOnce(() -> m_intake.runReverseIntake()));
-        engineer.button(3).whileTrue(m_climber.runClimberUp());
-        engineer.button(6).whileTrue(m_climber.runClimberDown());
+        // engineer.button(3).whileTrue(m_climber.runClimberUp());
+        // engineer.button(6).whileTrue(m_climber.runClimberDown());
 
         // Idle while the robot is disabled. This ensures the configured
         // neutral mode is applied to the drive motors while disabled.

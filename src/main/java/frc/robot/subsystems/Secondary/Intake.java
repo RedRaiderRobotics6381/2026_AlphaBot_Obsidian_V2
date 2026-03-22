@@ -20,21 +20,21 @@ public class Intake extends SubsystemBase {
     private TalonFXS intMtrBck;
     private TalonFXSConfiguration intVelMtrLdrCfg;
     private VoltageOut voltageCntrl;
-    public boolean intakeOn;
+    public static boolean intakeOn;
     public boolean reverseIntakeOn;
 
 public Intake() {
     intakeOn = false;
     intMtrFrnt = new TalonFXS(IntakeConstants.INTAKE_MOTOR_PORT_1, TunerConstants.kCANBus);
     intMtrBck = new TalonFXS(IntakeConstants.INTAKE_MOTOR_PORT_2, TunerConstants.kCANBus);
-    intMtrBck.setControl((new Follower(IntakeConstants.INTAKE_MOTOR_PORT_1, MotorAlignmentValue.Aligned)));
+    intMtrBck.setControl((new Follower(IntakeConstants.INTAKE_MOTOR_PORT_1, MotorAlignmentValue.Opposed)));
 
     intVelMtrLdrCfg = new TalonFXSConfiguration();
     intVelMtrLdrCfg.Commutation.MotorArrangement = MotorArrangementValue.VORTEX_JST;
     voltageCntrl = new VoltageOut(0.0);
 
     intVelMtrLdrCfg.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-    intVelMtrLdrCfg.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+    intVelMtrLdrCfg.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
     intVelMtrLdrCfg.CurrentLimits.SupplyCurrentLimitEnable = false;
     intVelMtrLdrCfg.CurrentLimits.StatorCurrentLimitEnable = false;
@@ -66,19 +66,21 @@ public Intake() {
  * @param volt how many volts it's set to
  */
 public void setVoltage(double volt) {
-    intMtrFrnt.setControl(voltageCntrl.withOutput(Math.signum(volt) * (Math.abs(volt) + 3)));
+    // intMtrFrnt.setControl(voltageCntrl.withOutput(Math.signum(volt) * (Math.abs(volt) + 3)));
+    intMtrFrnt.setControl(voltageCntrl.withOutput(volt));
 }
 
 /** runs the intake, when intake is off, it uses zero volts, and when intake is on, it uses 9 volts while the reverse intake turns off
  */
 public void runIntake(){
+    System.out.println("hello");
     if(intakeOn){
         intakeOn = false;
         setVoltage(0);
     } else {
         intakeOn = true;
         reverseIntakeOn = false;
-        setVoltage(3);
+        setVoltage(4);
     }
 }
 /** runs the reverse intake, uses no volts whens the reverse intake is off, and uses 9 volts and runs in reverse when reverse intake is on and the intake is off 

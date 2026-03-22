@@ -25,7 +25,7 @@ public class ShootOver extends Command {
 
     @Override
     public void execute(){
-        if(Math.abs(m_rotate.getAngle() - ConstantValues.SHOOT_OVER_ANGLE) < 0.5 && Math.abs(m_outtake.wheelSpeedMtr.getVelocity().getValueAsDouble() - ConstantValues.SHOOT_OVER_SPEED) <0.5){
+        if(Math.abs(m_rotate.getAngle() - ConstantValues.SHOOT_OVER_ANGLE) < 0.5 && Math.abs(m_outtake.wheelSpeedUppMtr.getVelocity().getValueAsDouble() - ConstantValues.SHOOT_OVER_SPEED) <0.5){
             m_indexer.setVoltage(5);
         }
     }
@@ -33,7 +33,7 @@ public class ShootOver extends Command {
     @Override
     public void end(boolean interrupted){
         m_indexer.setVoltage(0);
-        m_rotate.setRotateAngle(0);
+        m_rotate.setVoltage(0);
         m_outtake.setVelocity(ConstantValues.OUTTAKE_IDLE_SPEED);
     }
 }

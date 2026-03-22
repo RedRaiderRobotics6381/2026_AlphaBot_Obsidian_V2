@@ -1,5 +1,7 @@
 package frc.robot.subsystems.Secondary;
 
+import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -23,7 +25,7 @@ public class IntakeSlider extends SubsystemBase {
     public TalonFX sliderLdrMtr;
     public TalonFX sliderFlwMtr;
     public CANcoder sliderEncoder;
-    private CANcoderConfiguration sliEncCfg;
+    // private CANcoderConfiguration sliEncCfg;
     private TalonFXConfiguration sliderLdrMtrCfg;
     private VoltageOut voltageCntrl;
     private MotionMagicVoltage motionMagicVoltage;
@@ -38,24 +40,25 @@ public class IntakeSlider extends SubsystemBase {
         sliderLdrMtr = new TalonFX(IntakeSliderConstants.INTAKE_SLIDER_MOTOR_PORT_LDR, TunerConstants.kCANBus);
         sliderFlwMtr = new TalonFX(IntakeSliderConstants.INTAKE_SLIDER_MOTOR_PORT_FLW, TunerConstants.kCANBus);
         sliderFlwMtr.setControl(new Follower(IntakeSliderConstants.INTAKE_SLIDER_MOTOR_PORT_LDR, MotorAlignmentValue.Opposed));
-        sliderEncoder = new CANcoder(4, TunerConstants.kCANBus);
+        // sliderEncoder = new CANcoder(4, TunerConstants.kCANBus);
 
         voltageCntrl = new VoltageOut(0.0);
         sliderLdrMtrCfg = new TalonFXConfiguration();
-        sliEncCfg = new CANcoderConfiguration();
+        // sliEncCfg = new CANcoderConfiguration();
         motionMagicVoltage = new MotionMagicVoltage(0.0).withSlot(0);
 
         sliderLdrMtrCfg.MotorOutput.NeutralMode = NeutralModeValue.Brake;
         sliderLdrMtrCfg.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
-        sliderLdrMtrCfg.withFeedback(new FeedbackConfigs().withRemoteCANcoder(sliderEncoder).withRotorToSensorRatio(3));
+        sliderLdrMtrCfg.withFeedback(new FeedbackConfigs().withSensorToMechanismRatio(18));
+        // sliderLdrMtrCfg.withFeedback(new FeedbackConfigs().withRemoteCANcoder(sliderEncoder).withRotorToSensorRatio(3));
 
         sliderLdrMtrCfg.CurrentLimits.SupplyCurrentLimitEnable = true;
         sliderLdrMtrCfg.CurrentLimits.StatorCurrentLimitEnable = true;
         sliderLdrMtrCfg.CurrentLimits.SupplyCurrentLimit = 20.0;
         sliderLdrMtrCfg.CurrentLimits.StatorCurrentLimit = 80.0;
 
-        sliEncCfg.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive;
+        // sliEncCfg.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive;
 
         sliderLdrMtrCfg.Slot0.kP = kP;
         sliderLdrMtrCfg.Slot0.kI = kI;
@@ -66,15 +69,15 @@ public class IntakeSlider extends SubsystemBase {
 
         sliderLdrMtr.getConfigurator().apply(sliderLdrMtrCfg);
         sliderFlwMtr.getConfigurator().apply(sliderLdrMtrCfg);
-        sliderEncoder.getConfigurator().apply(sliEncCfg);
+        // sliderEncoder.getConfigurator().apply(sliEncCfg);
     }
 
-   /** sets the rotate angle with it makeing the slider go out a distance of 13 when its true, When its false it makes the slider not go out at all.
+   /** sets the rotate angle with it making the slider go out a distance of 13 when its true, When its false it makes the slider not go out at all.
     */ 
     public void setRotateAngle() {
         if (!out) {
             out = true;
-            sliderLdrMtr.setControl(motionMagicVoltage.withPosition(distToRev(13.5)));
+            sliderLdrMtr.setControl(motionMagicVoltage.withPosition(angToRev(130)));
         } else {
             out = false;
             sliderLdrMtr.setControl(motionMagicVoltage.withPosition(0));
@@ -93,16 +96,16 @@ public class IntakeSlider extends SubsystemBase {
      * @param revolutions the amount of revolutions needed to get to a distance
      * @return revToDist
      */
-    public double revToDist(double revolutions){
-        return revolutions * Math.PI * 1.5; 
+    public double revToAng(double revolutions){
+        return revolutions * 360; 
     }
 
     /** convert distance to revolutions
      * @param distance the distance needed to get a certain amount of revolution
      * @return distToRev
      */
-    public double distToRev(double distance){
-        return distance / (Math.PI * 1.5);
+    public double angToRev(double angle){
+        return angle / 360;
     }
 
 /** a command that makes the slider run using a single volt at times, when its not running its at 0
@@ -114,10 +117,5 @@ public class IntakeSlider extends SubsystemBase {
       () -> setVoltage(0), 
       this);
   }
-    @Override
-    public void periodic(){
-        // distance = revToDist(sliderEncoder.getPosition().getValueAsDouble());
-        // SmartDashboard.putNumber("distance", distance);
-    }
 }
 

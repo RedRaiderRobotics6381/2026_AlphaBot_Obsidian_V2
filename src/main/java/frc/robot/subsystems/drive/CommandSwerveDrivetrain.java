@@ -9,7 +9,7 @@ import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.swerve.SwerveRequest;
-
+import com.ctre.phoenix6.swerve.jni.SwerveJNI.ModuleState;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
@@ -19,6 +19,7 @@ import com.pathplanner.lib.path.PathConstraints;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
@@ -41,11 +42,20 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     private static final double kSimLoopPeriod = 0.005; // 5 ms
     private Notifier m_simNotifier = null;
     private double m_lastSimTime;
-    public double distanceToHub;
+    public static double distanceToHub;
     public double yaw;
     public double xDistanceToHub;
     public double rotOffset;
-    public boolean isAligned;
+    public static boolean isAligned;
+    public int shooterPos;
+    public double x_h;
+    public double y_h;
+    public double x_l;
+    public double y_l;
+    public double d_r;
+    public double theta_f;
+    public double x_rl;
+    public double y_rl;
 
     /* Blue alliance sees forward as 0 degrees (toward red alliance wall) */
     private static final Rotation2d kBlueAlliancePerspectiveRotation = Rotation2d.kZero;
@@ -283,14 +293,37 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                 m_hasAppliedOperatorPerspective = true;
             });
         }
-            distanceToHub =  Math.sqrt(Math.pow(xDistanceToHub - getState().Pose.getX(), 2) + Math.pow(4.3 - getState().Pose.getY(), 2)) * 100 / 2.54;
-            yaw = Math.atan((4.3 - getState().Pose.getY())// + shooterPos * ((15.945 * Math.sin(getState().Pose.getRotation().getRadians() + 0.7188) * 2.54) / 100)))
-            /(xDistanceToHub - getState().Pose.getX()));// + shooterPos * ((15.945 * Math.cos(getState().Pose.getRotation().getRadians() + 0.7188) * 2.54) / 100)))); // was 4.0259
+            x_h = xDistanceToHub - getState().Pose.getX();
+            y_h = 4.3 - getState().Pose.getY();
+            distanceToHub =  Math.hypot(x_h, y_h) * 100 / 2.54;
+            x_rl = 9.334786;
+            y_rl = 10.3125;
+            d_r = Math.hypot(x_rl, y_rl);
+            theta_f = Math.atan(x_rl/y_rl);
+            x_l = x_h - d_r * Math.cos(getState().Pose.getRotation().getRadians() - (theta_f + Math.PI/2)) * 2.54 / 100;
+            y_l = y_h + d_r * Math.sin(getState().Pose.getRotation().getRadians() - (theta_f + Math.PI/2)) * 2.54 / 100;
+            yaw = Math.atan(y_l/x_l) +   20 / distanceToHub;
+            // > 0 ? Math.PI / 2 - Math.atan(y_l/x_l) : - Math.PI / 2 - Math.atan(y_l/x_l);
             isAligned = (getState().Pose.getRotation().getRadians() > 0) ? Math.abs(yaw - (getState().Pose.getRotation().getRadians() - rotOffset)) < 0.1 : Math.abs(yaw - (getState().Pose.getRotation().getRadians() + rotOffset)) < 0.1;
             SmartDashboard.putBoolean("isAligned", isAligned);
             SmartDashboard.putNumber("distance", distanceToHub);
+            SmartDashboard.putNumber("x speed", getKinematics().toChassisSpeeds(
+                getModules()[0].getCurrentState(),
+                getModules()[1].getCurrentState(),
+                getModules()[2].getCurrentState(),
+                getModules()[3].getCurrentState()).vxMetersPerSecond);
+            SmartDashboard.putNumber("yaw", getState().Pose.getRotation().getRadians());
+            SmartDashboard.putNumber("x", getState().Pose.getX());
+            SmartDashboard.putNumber("y", getState().Pose.getY());
+            SmartDashboard.putNumber("hub x", x_h);
+            SmartDashboard.putNumber("hub y", y_h);
+            SmartDashboard.putNumber("launcher x", x_l);
+            SmartDashboard.putNumber("launcher y", y_l);
+            SmartDashboard.putNumber("set theta", yaw);
     }
-
+/**
+ * 
+ */
     private void startSimThread() {
         m_lastSimTime = Utils.getCurrentTimeSeconds();
 

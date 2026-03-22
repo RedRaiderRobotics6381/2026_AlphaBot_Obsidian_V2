@@ -30,7 +30,7 @@ public class Rotation extends SubsystemBase {
     private MotionMagicVoltage motionMagicVoltage;
     double angle;
 
-    private double kP = 34.0, kI = 0.0, kD = 0.0, kS = 0.4, kFF;
+    private double kP = 100.0, kI = 0.0, kD = 0.0, kS = 0.4, kFF;
     public boolean close;
 
     public Rotation() {

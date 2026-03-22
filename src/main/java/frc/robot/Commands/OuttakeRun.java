@@ -11,14 +11,12 @@ public class OuttakeRun extends Command {
     private Outtake m_outtake;
     private Intake m_intake;
     private IntakeSlider m_intakeSlider;
-    CommandSwerveDrivetrain drivetrain;
     double distance;
 
-    public OuttakeRun(Outtake m_outtake, Intake m_intake, IntakeSlider m_intakeSlider, CommandSwerveDrivetrain drivetrain) {
+    public OuttakeRun(Outtake m_outtake, Intake m_intake, IntakeSlider m_intakeSlider) {
         this.m_intake = m_intake;
         this.m_outtake = m_outtake;
         this.m_intakeSlider = m_intakeSlider;
-        this.drivetrain = drivetrain;
     }
 
     @Override
@@ -32,7 +30,7 @@ public class OuttakeRun extends Command {
 
     @Override
     public void execute(){
-        if(drivetrain.distanceToHub < ConstantValues.DISTANCE_TO_SHOOT){
+        if(CommandSwerveDrivetrain.distanceToHub < ConstantValues.DISTANCE_TO_SHOOT){
             m_outtake.setVelocity(ConstantValues.SHOOTER_RPS_NEAR);
         }else {
             m_outtake.setVelocity(ConstantValues.SHOOTER_RPS_FAR);

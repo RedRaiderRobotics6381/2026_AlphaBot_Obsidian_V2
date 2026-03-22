@@ -1,8 +1,5 @@
 package frc.robot.autos;
 
-import java.util.List;
-import java.util.Optional;
-
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.PathPlannerPath;
 
