@@ -294,15 +294,16 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             });
         }
             x_h = xDistanceToHub - getState().Pose.getX();
-            y_h = 4.3 - getState().Pose.getY();
+            y_h = 4 - getState().Pose.getY();
             distanceToHub =  Math.hypot(x_h, y_h) * 100 / 2.54;
             x_rl = 9.334786;
             y_rl = 10.3125;
             d_r = Math.hypot(x_rl, y_rl);
             theta_f = Math.atan(x_rl/y_rl);
-            x_l = x_h - d_r * Math.cos(getState().Pose.getRotation().getRadians() - (theta_f + Math.PI/2)) * 2.54 / 100;
-            y_l = y_h + d_r * Math.sin(getState().Pose.getRotation().getRadians() - (theta_f + Math.PI/2)) * 2.54 / 100;
-            yaw = Math.atan(y_l/x_l) +   20 / distanceToHub;
+            x_l = x_h - d_r * Math.cos(-getState().Pose.getRotation().getRadians() + (theta_f + Math.PI/2)) * 2.54 / 100;
+            y_l = y_h + d_r * Math.sin(-getState().Pose.getRotation().getRadians() + (theta_f + Math.PI/2)) * 2.54 / 100;
+            yaw = Math.atan(y_l/x_l);
+            // + (0.7 - (0.005 * distanceToHub));
             // > 0 ? Math.PI / 2 - Math.atan(y_l/x_l) : - Math.PI / 2 - Math.atan(y_l/x_l);
             isAligned = (getState().Pose.getRotation().getRadians() > 0) ? Math.abs(yaw - (getState().Pose.getRotation().getRadians() - rotOffset)) < 0.1 : Math.abs(yaw - (getState().Pose.getRotation().getRadians() + rotOffset)) < 0.1;
             SmartDashboard.putBoolean("isAligned", isAligned);

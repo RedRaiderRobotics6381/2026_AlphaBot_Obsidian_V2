@@ -38,9 +38,9 @@ public class Robot extends TimedRobot {
   public Robot() {
     m_robotContainer = new RobotContainer();
     frontVision = new FrontVision(m_robotContainer.drivetrain::addVisionMeasurement);
-    // backVision = new BackVision(m_robotContainer.drivetrain::addVisionMeasurement);
+    backVision = new BackVision(m_robotContainer.drivetrain::addVisionMeasurement);
     // outtakeVision = new OuttakeVision(m_robotContainer.drivetrain::addVisionMeasurement);
-    // radioVision = new RadioVision(m_robotContainer.drivetrain::addVisionMeasurement);
+    radioVision = new RadioVision(m_robotContainer.drivetrain::addVisionMeasurement);
 
   }
 
@@ -86,9 +86,9 @@ public class Robot extends TimedRobot {
     CommandScheduler.getInstance().run();
 
     frontVision.periodic();
-    // backVision.periodic();
+    backVision.periodic();
     // outtakeVision.periodic();
-    // radioVision.periodic();
+    radioVision.periodic();
 
     // if(!m_robotContainer.m_intakeSlider.out && m_robotContainer.m_intake.intakeOn){
     //   m_robotContainer.m_intake.runIntake();
@@ -116,7 +116,7 @@ public class Robot extends TimedRobot {
       CommandScheduler.getInstance().schedule(m_autonomousCommand);
     }
     m_robotContainer.m_rotation.rotationMtr.setPosition(0);
-    m_robotContainer.m_intakeSlider.sliderEncoder.setPosition(0);
+    m_robotContainer.m_intakeSlider.sliderLdrMtr.setPosition(0);
     if(DriverStation.getAlliance().get() == Alliance.Red){
             m_robotContainer.drivetrain.xDistanceToHub = 11.92; // was 11.9
             m_robotContainer.drivetrain.rotOffset = Math.PI;
@@ -129,7 +129,9 @@ public class Robot extends TimedRobot {
   }
 
   @Override
-  public void autonomousPeriodic() {}
+  public void autonomousPeriodic() {
+          SmartDashboard.putNumber("Match Time", DriverStation.getMatchTime());
+  }
 
   // @Override
   // public void autonomousExit() {}
@@ -150,6 +152,8 @@ public class Robot extends TimedRobot {
             m_robotContainer.drivetrain.rotOffset = 0;
             System.out.println("hello");
         }
+        DriverStation.getGameSpecificMessage();
+        // DriverStation.getAlliance().get() == Alliance.Red;
   }
 
   @Override

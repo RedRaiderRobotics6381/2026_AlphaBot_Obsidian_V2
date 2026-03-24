@@ -92,7 +92,7 @@ public void runReverseIntake(){
     } else {
         reverseIntakeOn = true;
         intakeOn = false;
-        setVoltage(-9);
+        setVoltage(-4);
     }
 }
 @Override

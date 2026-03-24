@@ -1,5 +1,6 @@
 package frc.robot.Commands;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.*;
 import frc.robot.subsystems.Secondary.Indexer;
@@ -28,6 +29,8 @@ public class ShootOver extends Command {
         if(Math.abs(m_rotate.getAngle() - ConstantValues.SHOOT_OVER_ANGLE) < 0.5 && Math.abs(m_outtake.wheelSpeedUppMtr.getVelocity().getValueAsDouble() - ConstantValues.SHOOT_OVER_SPEED) <0.5){
             m_indexer.setVoltage(5);
         }
+        SmartDashboard.putBoolean("atAngle Shootover", Math.abs(m_rotate.getAngle() - ConstantValues.SHOOT_OVER_ANGLE) < 0.5);
+        SmartDashboard.putBoolean("atSpeed Shootover", Math.abs(m_outtake.wheelSpeedUppMtr.getVelocity().getValueAsDouble() - ConstantValues.SHOOT_OVER_SPEED) <0.5);
     }
 
     @Override
