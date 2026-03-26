@@ -229,9 +229,9 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                 ),
                 new PPHolonomicDriveController(
                     // PID constants for translation
-                    new PIDConstants(1, 0, 0),
+                    new PIDConstants(2, 0, 0),
                     // PID constants for rotation
-                    new PIDConstants(1, 0, 0)
+                    new PIDConstants(11, 0, 0)
                 ),
                 config,
                 // Assume the path needs to be flipped for Red vs Blue, this is normally the case
@@ -305,7 +305,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             yaw = Math.atan(y_l/x_l);
             // + (0.7 - (0.005 * distanceToHub));
             // > 0 ? Math.PI / 2 - Math.atan(y_l/x_l) : - Math.PI / 2 - Math.atan(y_l/x_l);
-            isAligned = (getState().Pose.getRotation().getRadians() > 0) ? Math.abs(yaw - (getState().Pose.getRotation().getRadians() - rotOffset)) < 0.1 : Math.abs(yaw - (getState().Pose.getRotation().getRadians() + rotOffset)) < 0.1;
+            isAligned = (getState().Pose.getRotation().getRadians() > 0) ? Math.abs(yaw - (getState().Pose.getRotation().getRadians() - rotOffset)) < 0.05 : Math.abs(yaw - (getState().Pose.getRotation().getRadians() + rotOffset)) < 0.05;
             SmartDashboard.putBoolean("isAligned", isAligned);
             SmartDashboard.putNumber("distance", distanceToHub);
             SmartDashboard.putNumber("x speed", getKinematics().toChassisSpeeds(

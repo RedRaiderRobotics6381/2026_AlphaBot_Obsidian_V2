@@ -4,12 +4,12 @@
     {
       "anchor": {
         "x": 2.2381888888888892,
-        "y": 0.769
+        "y": 0.849
       },
       "prevControl": null,
       "nextControl": {
-        "x": 8.552778061553015,
-        "y": 0.5936102164717584
+        "x": 8.58185618559343,
+        "y": -0.027984166744926098
       },
       "isLocked": false,
       "linkedName": "Almost Shoot Right"
@@ -17,11 +17,11 @@
     {
       "anchor": {
         "x": 7.841,
-        "y": 3.556
+        "y": 3.636
       },
       "prevControl": {
-        "x": 7.860476385580259,
-        "y": -0.17612228749270642
+        "x": 7.8607387972438625,
+        "y": 0.9560726913060935
       },
       "nextControl": null,
       "isLocked": false,
@@ -38,7 +38,7 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 3.0,
+    "maxVelocity": 1.0,
     "maxAcceleration": 3.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
@@ -46,7 +46,7 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0,
+    "velocity": 0.2,
     "rotation": 90.0
   },
   "reversed": false,
@@ -55,5 +55,5 @@
     "velocity": 0,
     "rotation": 0.0
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }

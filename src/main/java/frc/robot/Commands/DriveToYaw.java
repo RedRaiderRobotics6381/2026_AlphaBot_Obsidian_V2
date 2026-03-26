@@ -26,6 +26,6 @@ public class DriveToYaw extends Command{
     public void execute(){
         drivetrain.setControl(drive.withVelocityX(-joystick.getLeftY() * MaxSpeed * 0.5) // Drive forward with negative Y (forward)
                      .withVelocityY(-joystick.getLeftX() * MaxSpeed * 0.5) // Drive left with negative X (left)
-                     .withTargetDirection(new Rotation2d(drivetrain.yaw)).withHeadingPID(6.0, 0, 0));
+                     .withTargetDirection(new Rotation2d(drivetrain.yaw)).withHeadingPID(7.0, 0, 0));
     }
 }

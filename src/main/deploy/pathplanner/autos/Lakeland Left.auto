@@ -21,50 +21,57 @@
                     {
                       "type": "named",
                       "data": {
-                        "name": "Intake"
+                        "name": "Intake Out"
+                      }
+                    },
+                    {
+                      "type": "sequential",
+                      "data": {
+                        "commands": [
+                          {
+                            "type": "wait",
+                            "data": {
+                              "waitTime": 2.0
+                            }
+                          },
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "Intake Run"
+                            }
+                          }
+                        ]
                       }
                     }
                   ]
                 }
               },
               {
-                "type": "named",
+                "type": "parallel",
                 "data": {
-                  "name": "Intake Run"
-                }
-              },
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "To Shoot"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "race",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "AutoShooter"
-                }
-              },
-              {
-                "type": "wait",
-                "data": {
-                  "waitTime": 5.0
+                  "commands": [
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "To Shoot"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Intake Run"
+                      }
+                    }
+                  ]
                 }
               }
             ]
           }
         },
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "Rezone"
+            "name": "AutoShooter"
           }
         }
       ]

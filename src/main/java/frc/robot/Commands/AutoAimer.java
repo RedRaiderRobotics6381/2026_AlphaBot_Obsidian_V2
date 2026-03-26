@@ -59,7 +59,7 @@ public class AutoAimer extends Command {
         }
         angle = (lowerBoundAngle + upperBoundAngle) / 2;
         m_rotate.setRotateAngle(angle);
-        atAngle = Math.abs(m_rotate.getAngle() - angle) < 1;
+        atAngle = Math.abs(m_rotate.getAngle() - angle) < 0.5;
         SmartDashboard.putNumber("set angle", angle);
         SmartDashboard.putBoolean("atAngle", atAngle);
     }

@@ -4,12 +4,12 @@
     {
       "anchor": {
         "x": 2.2381888888888892,
-        "y": 0.769
+        "y": 0.849
       },
       "prevControl": null,
       "nextControl": {
         "x": 1.3611855624729432,
-        "y": 1.1587702932558464
+        "y": 1.2387702932558464
       },
       "isLocked": false,
       "linkedName": "Almost Shoot Right"

@@ -34,6 +34,7 @@ public class Robot extends TimedRobot {
   private BackVision backVision;
   // private OuttakeVision outtakeVision;
   private RadioVision radioVision;
+  private String allianceColor;
 
   public Robot() {
     m_robotContainer = new RobotContainer();
@@ -90,6 +91,11 @@ public class Robot extends TimedRobot {
     // outtakeVision.periodic();
     radioVision.periodic();
 
+    SmartDashboard.putBoolean("Match Data/InShift", currentShiftIsYours());
+    SmartDashboard.putNumber(
+                    "Match Data/TimeLeftInShift",
+                    timeLeftInShiftSeconds(DriverStation.getMatchTime()));
+
     // if(!m_robotContainer.m_intakeSlider.out && m_robotContainer.m_intake.intakeOn){
     //   m_robotContainer.m_intake.runIntake();
     // }
@@ -133,8 +139,10 @@ public class Robot extends TimedRobot {
           SmartDashboard.putNumber("Match Time", DriverStation.getMatchTime());
   }
 
-  // @Override
-  // public void autonomousExit() {}
+  @Override
+  public void autonomousExit() {
+        m_robotContainer.m_intakeSlider.setVoltage(0);
+  }
 
   @Override
   public void teleopInit() {
@@ -152,9 +160,38 @@ public class Robot extends TimedRobot {
             m_robotContainer.drivetrain.rotOffset = 0;
             System.out.println("hello");
         }
-        DriverStation.getGameSpecificMessage();
-        // DriverStation.getAlliance().get() == Alliance.Red;
-  }
+
+        
+  //       DriverStation.getGameSpecificMessage();
+  //       if(DriverStation.getAlliance().get() == Alliance.Red){
+  //         allianceColor = "R";
+  //       } else {
+  //         allianceColor = "B";
+  //       }
+  //       if(DriverStation.getGameSpecificMessage() == allianceColor){
+  //         DriverStation.getMatchTime();
+  //         if (DriverStation.getMatchTime() == 55.0 || DriverStation.getMatchTime() == 105.0) {
+  //           // our alliance
+  //         }
+  //         if (DriverStation.getMatchTime() == 80.0 || DriverStation.getMatchTime() == 130.0) {
+  //           // other alliance
+  //         }
+
+  //       }
+  //       if(DriverStation.getGameSpecificMessage() != allianceColor){
+  //         DriverStation.getMatchTime();
+  //         if (DriverStation.getMatchTime() > 55.0 || DriverStation.getMatchTime() > 105.0) {
+  //           // other alliance
+  //         }
+  //         if (DriverStation.getMatchTime() > 80.0 || DriverStation.getMatchTime() > 130.0) {
+  //           // our alliance
+  //         }
+
+  //       }
+
+  
+
+   }
 
   @Override
   public void teleopPeriodic() {
@@ -171,6 +208,7 @@ public class Robot extends TimedRobot {
     CommandScheduler.getInstance().cancelAll();
   }
 
+
   // @Override
   // public void testPeriodic() {}
 
@@ -179,4 +217,68 @@ public class Robot extends TimedRobot {
 
   // @Override
   // public void simulationPeriodic() {}
-}
+
+
+public static boolean blueWonAuto() {
+        String matchInfo = DriverStation.getGameSpecificMessage();
+        if (matchInfo != null && matchInfo.length() > 0) {
+            return matchInfo.charAt(0) == 'B';
+        }
+        // Safe default if data isn't ready yet
+        return false;
+    }
+
+    public static int timeLeftInShiftSeconds(double currentMatchTime) {
+        if (currentMatchTime >= 130) {
+            return (int) (currentMatchTime - 130);
+        } else if (currentMatchTime >= 105 && currentMatchTime < 130) {
+            return (int) (currentMatchTime - 105);
+        } else if (currentMatchTime >= 80 && currentMatchTime < 105) {
+            return (int) (currentMatchTime - 80);
+        } else if (currentMatchTime >= 55 && currentMatchTime < 80) {
+            return (int) (currentMatchTime - 55);
+        } else if (currentMatchTime >= 30 && currentMatchTime < 55) {
+            return (int) (currentMatchTime - 30);
+        } else {
+            return (int) currentMatchTime;
+        }
+    }
+
+    public static boolean isCurrentShiftBlue(double currentMatchTime) {
+        if (currentMatchTime >= 105 && currentMatchTime < 130) {
+            return blueWonAuto() ? false : true;
+        } else if (currentMatchTime >= 80 && currentMatchTime < 105) {
+            return blueWonAuto() ? true : false;
+        } else if (currentMatchTime >= 55 && currentMatchTime < 80) {
+            return blueWonAuto() ? false : true;
+        } else if (currentMatchTime >= 30 && currentMatchTime < 55) {
+            return blueWonAuto() ? true : false;
+        } else {
+            return true;
+        }
+    }
+
+    public static boolean isCurrentShiftRed(double currentMatchTime) {
+        if (currentMatchTime >= 105 && currentMatchTime < 130) {
+            return blueWonAuto() ? true : false;
+        } else if (currentMatchTime >= 80 && currentMatchTime < 105) {
+            return blueWonAuto() ? false : true;
+        } else if (currentMatchTime >= 55 && currentMatchTime < 80) {
+            return blueWonAuto() ? true : false;
+        } else if (currentMatchTime >= 30 && currentMatchTime < 55) {
+            return blueWonAuto() ? false : true;
+        } else {
+            return true;
+        }
+    }
+
+    public static boolean currentShiftIsYours() {
+        double currentMatchTime = DriverStation.getMatchTime();
+        if (DriverStation.getAlliance().orElse(DriverStation.Alliance.Blue)
+                .equals(DriverStation.Alliance.Blue)) {
+            return isCurrentShiftBlue(currentMatchTime);
+        } else {
+            return isCurrentShiftRed(currentMatchTime);
+        }
+      }
+    }

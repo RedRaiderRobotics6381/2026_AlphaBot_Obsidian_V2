@@ -1,0 +1,31 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "To Balls Right"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "To Shoot Right"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Rezone Right"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": false
+}

@@ -81,7 +81,7 @@ public class RobotContainer {
         NamedCommands.registerCommand("Aim", new AutoAimer(m_rotation));
         NamedCommands.registerCommand("Index", new IndexerControl(m_indexer));
         NamedCommands.registerCommand("Yaw", new DriveToYaw(drivetrain, driveToAngle, joystick, MaxSpeed));
-        NamedCommands.registerCommand("Intake Out", Commands.runOnce(() -> m_intakeSlider.setRotateAngle()));
+        NamedCommands.registerCommand("Intake Out", Commands.runOnce(() -> m_intakeSlider.setRotateAngle()).andThen(new WaitCommand(2)).andThen(Commands.runOnce(() -> m_intakeSlider.setVoltage(0))));
         NamedCommands.registerCommand("Intake Run", Commands.runOnce(() -> m_intake.runIntake()));
         NamedCommands.registerCommand("AutoShooter", 
             Commands.parallel(

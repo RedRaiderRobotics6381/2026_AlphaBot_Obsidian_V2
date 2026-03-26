@@ -89,9 +89,9 @@ public class Outtake extends SubsystemBase {
     public void periodic() {
         // SmartDashboard.putBoolean("Outtake On", wheelSpeedMtr.getVelocity().getValueAsDouble() > 1);
         if(CommandSwerveDrivetrain.distanceToHub < ConstantValues.DISTANCE_TO_SHOOT){
-            atSpeed = Math.abs(wheelSpeedUppMtr.getVelocity().getValueAsDouble() - ConstantValues.SHOOTER_RPS_NEAR/2) < 1;
+            atSpeed = Math.abs(wheelSpeedUppMtr.getVelocity().getValueAsDouble() - ConstantValues.SHOOTER_RPS_NEAR/2) < 0.5;
         } else {
-            atSpeed = Math.abs(wheelSpeedUppMtr.getVelocity().getValueAsDouble() - ConstantValues.SHOOTER_RPS_FAR/2) < 1;
+            atSpeed = Math.abs(wheelSpeedUppMtr.getVelocity().getValueAsDouble() - ConstantValues.SHOOTER_RPS_FAR/2) < 0.5;
         }
         SmartDashboard.putNumber("Cool Wheel Velocity", wheelSpeedUppMtr.getVelocity().getValueAsDouble());
     }
